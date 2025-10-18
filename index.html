@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Menu de la Taverne — Jeux prêts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Inter:wght@300;400;600&display=swap');
+    :root{--bg-wood: linear-gradient(180deg,#2b1709 0%, #3b2410 100%);}
+    body{
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg-wood); color: #111827; padding: 2rem;
+    }
+    .page { max-width:1100px; margin:0 auto;
+      background: linear-gradient(180deg, rgba(246,237,220,0.98), rgba(242,231,205,0.95));
+      border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      padding: 28px; border: 6px solid rgba(20,10,5,0.6); position: relative; overflow: hidden;
+    }
+    .title { font-family: "MedievalSharp", "Georgia", serif; font-size: 2.4rem; color: #2b1a0f; }
+    .subtitle{ color: #5b452f; margin-top: -4px; }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(250,245,238,0.92));
+      border-radius: 10px; border: 2px solid rgba(0,0,0,0.06);
+    }
+    .parchment-edge {
+      position:absolute; right:0; top:0; width:260px; height:100%;
+      background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=1a2b3c') center/cover;
+      opacity: .12; mix-blend-mode:multiply; pointer-events:none;
+    }
+    .jaquette { width:100%; height:180px; object-fit:cover; border-radius:6px; border:1px solid rgba(0,0,0,0.06);}
+    .badge-available{ background:#22c55e; color:white; padding:.25rem .55rem; border-radius:999px; font-weight:600; font-size:.85rem; }
+    .badge-reserved{ background:#f59e0b; color:white; padding:.25rem .55rem; border-radius:999px; font-weight:600; font-size:.85rem; }
+    .badge-soon{ background:#6b7280; color:white; padding:.25rem .55rem; border-radius:999px; font-weight:600; font-size:.85rem; }
+    .muted{ color:#6b6b6b; font-size:.95rem; }
+    .vote-count { font-weight:600; margin-top:.5rem; display:block; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="parchment-edge" aria-hidden="true"></div>
+
+    <header class="mb-6">
+      <h1 class="title">Le Menu de la Taverne</h1>
+      <p class="subtitle">Carte des jeux prêts à être prêtés — choisissez votre quête pour un mois complet 🎮🍺</p>
+    </header>
+
+    <h2 class="text-xl font-bold mt-4 mb-2">Jeux disponibles</h2>
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-5" id="games-available"></section>
+
+    <h2 class="text-xl font-bold mt-8 mb-2">Prochainement — Votes communautaires</h2>
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-5" id="games-soon"></section>
+
+    <footer class="mt-8 text-sm muted">
+      <p>Descriptions et images inspirées des fiches Steam officielles (résumées). © Valve Corporation.</p>
+    </footer>
+  </div>
+
+  <script id="game-data" type="application/json">
+  [
+    {"title":"Voidtrain","appid":"1159690","status":"disponible","note":"","steam":"https://store.steampowered.com/app/1159690/Voidtrain/","desc":"Devenez membre d'équipage d'un train interdimensionnel : explorez des mondes étranges, améliorez votre train, craft et combattez seul ou en coop jusqu'à 4 joueurs."},
+    {"title":"Sons of the Forest","appid":"1326470","status":"disponible","note":"","steam":"https://store.steampowered.com/app/1326470/Sons_Of_The_Forest/","desc":"Envoyé sur une île lointaine pour retrouver un milliardaire disparu, vous luttez pour survivre dans un open-world survival-horror, seul ou avec des amis."},
+    {"title":"Icarus","appid":"1149460","status":"disponible","note":"","steam":"https://store.steampowered.com/app/1149460/ICARUS/","desc":"PvE survival axé sur des missions et un monde persistant : atterrissez, récoltez, construisez votre avant-poste et survivez dans une nature sauvage et impitoyable."},
+    {"title":"Abiotic Factor","appid":"427410","status":"disponible","note":"","steam":"https://store.steampowered.com/app/427410/Abiotic_Factor/","desc":"Survie et crafting dans une installation souterraine : explorez des zones anormales, affrontez des menaces paranormales et collaborez jusqu'à 6 joueurs."},
+    {"title":"Gray Zone Warfare","appid":"2479810","status":"disponible","note":"","steam":"https://store.steampowered.com/app/2479810/Gray_Zone_Warfare/","desc":"Hardcore tactical FPS d'extraction situé dans des jungles d'Asie du Sud-Est : rejoignez une PMC, survivez en PvPvE et customisez vos armes."},
+    {"title":"Remnant 2","appid":"1282100","status":"disponible","note":"","steam":"https://store.steampowered.com/app/1282100/REMNANT_II/","desc":"Affrontez des créatures et boss divins sur des mondes terrifiants — jeu d'action-coop où exploration et armes évoluent selon vos choix."},
+    {"title":"Ready or Not","appid":"1144200","status":"réservé","note":"","steam":"https://store.steampowered.com/app/1144200/Ready_or_Not/","desc":"FPS tactique intense : incarnez une unité SWAT moderne et gérez des interventions où la coordination et la précision sauvent des vies."},
+    {"title":"SnowRunner","appid":"1465360","status":"réservé","note":"Disponible à partir du 25/10/2025","steam":"https://store.steampowered.com/app/1465360/SnowRunner/","desc":"Simulation tout-terrain : conduisez de puissants véhicules, accomplissez des missions et domptez des environnements extrêmes en solo ou en coop."},
+    {"title":"Dying Light 2","appid":"534380","status":"prochainement","note":"","steam":"https://store.steampowered.com/app/534380/Dying_Light_2_Stay_Human/","desc":"Parcourez une ville dévastée par un virus dans un monde ouvert dynamique — affrontez les infectés, grimpez, combattez et survivez la nuit.","votes":1},
+    {"title":"PEAK","appid":"3527290","status":"prochainement","note":"","steam":"https://store.steampowered.com/app/3527290/PEAK/","desc":"Jeu de grimpe coopératif où la moindre erreur peut être fatale. Atteignez les sommets de l'île mystérieuse.","votes":2},
+    {"title":"Len's Island","appid":"1335830","status":"prochainement","note":"","steam":"https://store.steampowered.com/app/1335830/Lens_Island/","desc":"Un jeu de survie en monde ouvert sur un archipel mystérieux. Explorez, construisez, combattez et résolvez des énigmes dans des donjons.","votes":2},
+    {"title":"Aloft","appid":"1660080","status":"prochainement","note":"","steam":"https://store.steampowered.com/app/1660080/Aloft/","desc":"Jeu de simulation et exploration aérienne : pilotez votre vaisseau et explorez un monde en 3D rempli de puzzles et aventures.","votes":2},
+    {"title":"ContractVille","appid":"2698780","status":"prochainement","note":"","steam":"https://store.steampowered.com/app/2698780/ContractVille/","desc":"Gérez votre ville et vos contrats dans ce jeu de simulation stratégique où chaque décision compte.","votes":1}
+  ]
+  </script>
+
+  <script>
+    const data = JSON.parse(document.getElementById("game-data").textContent);
+    const available = document.getElementById("games-available");
+    const soon = document.getElementById("games-soon");
+
+    function steamHeader(appid){
+      return `https://cdn.cloudflare.steamstatic.com/steam/apps/${appid}/header.jpg`;
+    }
+
+    data.forEach(g => {
+      const card = document.createElement("article");
+      card.className = "card p-4 flex gap-4 items-start";
+
+      const img = document.createElement("img");
+      img.src = steamHeader(g.appid);
+      img.alt = g.title + " jaquette";
+      img.className = "jaquette w-1/3";
+
+      const body = document.createElement("div");
+      body.className = "w-2/3";
+
+      const title = document.createElement("h3");
+      title.className = "font-semibold text-xl";
+      title.textContent = g.title;
+
+      const badge = document.createElement("span");
+      badge.classList.add("ml-3");
+      if (g.status === "disponible")
+        badge.innerHTML = '<span class="badge-available">Disponible</span>';
+      else if (g.status === "réservé")
+        badge.innerHTML = '<span class="badge-reserved">Réservé</span>';
+      else
+        badge.innerHTML = '<span class="badge-soon">Prochainement</span>';
+
+      const desc = document.createElement("p");
+      desc.className = "mt-2 text-sm";
+      desc.textContent = g.desc;
+
+      const meta = document.createElement("div");
+      meta.className = "mt-3 text-xs muted flex items-center gap-3";
+      const steam = document.createElement("a");
+      steam.href = g.steam;
+      steam.target = "_blank";
+      steam.rel = "noopener";
+      steam.textContent = "Fiche Steam";
+      steam.className = "underline";
+      const note = document.createElement("span");
+      if (g.note) note.textContent = " • " + g.note;
+
+      meta.append(steam, note);
+      body.append(title, badge, desc, meta);
+
+      // Affichage du nombre de votes seulement
+      if(g.status === "prochainement"){
+        const voteCount = document.createElement("span");
+        voteCount.className = "vote-count";
+        voteCount.textContent = "Votes : " + g.votes;
+        body.appendChild(voteCount);
+      }
+
+      card.append(img, body);
+      if (g.status === "prochainement") soon.appendChild(card);
+      else available.appendChild(card);
+    });
+  </script>
+</body>
+</html>
