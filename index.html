@@ -90,8 +90,8 @@ body::before {
 /* Notes et petits textes */
 .muted{ color:#5b4b3f; font-size:.95rem; }
 
-/* Popup vote */
-#vote-popup {
+/* Popup vote ou suggestion */
+.popup {
   display:none;
   position:fixed;
   inset:0;
@@ -100,7 +100,7 @@ body::before {
   align-items:center;
   justify-content:center;
 }
-#vote-popup .popup-content {
+.popup .popup-content {
   background: #fff5e0;
   padding:2rem;
   border-radius:12px;
@@ -110,14 +110,14 @@ body::before {
   box-shadow: 0 8px 20px rgba(0,0,0,0.5);
   position: relative;
 }
-#vote-popup input {
+.popup input {
   width:80%;
   padding:0.5rem;
   border:1px solid #3b2b1f;
   border-radius:6px;
   margin-top:1rem;
 }
-#vote-popup button {
+.popup button {
   margin-top:1rem;
   padding:0.5rem 1rem;
   background:#3c7d1f;
@@ -125,7 +125,7 @@ body::before {
   border-radius:6px;
   font-weight:600;
 }
-#vote-popup .close-popup {
+.popup .close-popup {
   position:absolute;
   top:0.5rem;
   right:0.5rem;
@@ -148,19 +148,35 @@ body::before {
   <h2 class="title mt-10 text-2xl">Jeux souhaités par la communauté</h2>
   <section class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4" id="wish-container"></section>
 
+  <!-- Nouvelle section ajouter un jeu -->
+  <h2 class="title mt-10 text-2xl">Ajouter un jeu à suggérer</h2>
+  <button id="add-game-btn" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Ajouter un jeu à suggérer</button>
+
   <footer class="mt-8 text-sm muted">
     <p>Descriptions et images inspirées des fiches Steam officielles (résumées). © Valve Corporation.</p>
   </footer>
 </div>
 
-<!-- Popup pour le pseudo -->
-<div id="vote-popup" class="flex">
+<!-- Popup vote -->
+<div id="vote-popup" class="popup flex">
   <div class="popup-content">
     <span class="close-popup">&times;</span>
     <h3 class="text-xl font-semibold">Entrer votre pseudo</h3>
     <input type="text" id="voter-pseudo" placeholder="Votre pseudo" required>
     <button id="submit-vote">Envoyer le vote</button>
     <p id="vote-msg" class="mt-2 text-green-700 font-semibold"></p>
+  </div>
+</div>
+
+<!-- Popup suggestion -->
+<div id="suggest-popup" class="popup flex">
+  <div class="popup-content">
+    <span class="close-popup-suggest">&times;</span>
+    <h3 class="text-xl font-semibold">Suggérer un jeu</h3>
+    <input type="text" id="suggest-pseudo" placeholder="Votre pseudo" required>
+    <input type="text" id="suggest-link" placeholder="Lien du jeu" required>
+    <button id="submit-suggest">Envoyer la suggestion</button>
+    <p id="suggest-msg" class="mt-2 text-green-700 font-semibold"></p>
   </div>
 </div>
 
@@ -180,7 +196,8 @@ body::before {
 {"title":"Enshrouded","appid":"2698780","status":"prochainement","note":"Votes:1","steam":"https://store.steampowered.com/app/1203620/Enshrouded/","desc":"Vous êtes le Flameborn, dernier espoir d'une race mourante. Survivez aux ravages d'une brume corruptrice, et reconquérez votre royaume perdu. Jetez-vous dans un vaste monde, affrontez des boss redoutables, bâtissez votre fief et forgez votre destin dans ce jeu d’action-survival coopératif pour 1-16."},
 {"title":"No Man's Sky","appid":"275850","status":"prochainement","note":"Votes:1","steam":"https://store.steampowered.com/app/275850/No_Mans_Sky/","desc":"No Man's Sky est un jeu de science-fiction sur l'exploration et la survie dans un univers infini généré de manière dynamique."},
 {"title":"Baldur's Gate 3","appid":"1086940","status":"prochainement","note":"Votes:1","steam":"https://store.steampowered.com/app/1086940/Baldurs_Gate_3/","desc":"Constituez votre groupe et retournez aux Royaumes Oubliés dans une histoire d'amitié, de trahison, de sacrifice et de survie, sur fond d'attrait du pouvoir absolu."},
-{"title":"RV There Yet","appid":"3949040","status":"prochainement","note":"Votes:1","steam":"https://store.steampowered.com/app/3949040/RV_There_Yet/","desc":"Un jeu d'aventure coopératif qui vous met au défi de conduire votre caravane jusqu'à votre domicile !"}]
+{"title":"RV There Yet","appid":"3949040","status":"prochainement","note":"Votes:1","steam":"https://store.steampowered.com/app/3949040/RV_There_Yet/","desc":"Un jeu d'aventure coopératif qui vous met au défi de conduire votre caravane jusqu'à votre domicile !"},
+{"title":"VEIN","appid":"1857950","status":"prochainement","note":"Votes:1","steam":"https://store.steampowered.com/app/1857950/VEIN/","desc":"VEIN est un jeu de survie multijoueur en mode bac à sable dans un univers post-apocalyptique. Rassemblez des ressources pour survivre, explorez des bâtiments abandonnés, défendez votre maison et reconstruisez la société, seul ou avec des amis."}]
 </script>
 
 <script>
@@ -190,14 +207,14 @@ const wishContainer = document.getElementById("wish-container");
 
 function steamHeader(appid){ return `https://cdn.cloudflare.steamstatic.com/steam/apps/${appid}/header.jpg`; }
 
-// Pour la popup
+// --- Popup vote ---
 const popup = document.getElementById("vote-popup");
 const pseudoInput = document.getElementById("voter-pseudo");
 const submitVote = document.getElementById("submit-vote");
 const voteMsg = document.getElementById("vote-msg");
 let currentGame = null;
 
-document.querySelector(".close-popup").addEventListener("click", ()=> {
+document.querySelector(".close-popup").addEventListener("click", ()=>{
   popup.style.display = "none";
   pseudoInput.value = "";
   voteMsg.textContent = "";
@@ -243,19 +260,16 @@ data.forEach(g=>{
 
   body.append(title,badge,desc,meta);
 
-  // --- Bouton vote pour jeux non disponibles ---
-// Au lieu de if(g.status==="prochainement"){
-const voteButton = document.createElement("button");
-voteButton.className="mt-2 bg-amber-700 text-white px-3 py-1 rounded-lg hover:bg-amber-800 transition";
-voteButton.textContent="🗳️ Voter pour ce jeu";
-voteButton.addEventListener("click", ()=>{
-  currentGame = g;
-  popup.style.display = "flex";
-  pseudoInput.focus();
-});
-body.append(voteButton);
-// }
-
+  // bouton vote pour tous les jeux
+  const voteButton = document.createElement("button");
+  voteButton.className="mt-2 bg-amber-700 text-white px-3 py-1 rounded-lg hover:bg-amber-800 transition";
+  voteButton.textContent="🗳️ Voter pour ce jeu";
+  voteButton.addEventListener("click", ()=>{
+    currentGame = g;
+    popup.style.display = "flex";
+    pseudoInput.focus();
+  });
+  body.append(voteButton);
 
   card.append(img,body);
 
@@ -278,6 +292,7 @@ submitVote.addEventListener("click", async ()=>{
       method:"POST",
       headers:{ "Content-Type":"application/json" },
       body:JSON.stringify({
+        type:"vote",
         jeu: currentGame.title,
         appid: currentGame.appid,
         pseudo: pseudo,
@@ -288,6 +303,51 @@ submitVote.addEventListener("click", async ()=>{
   }catch(e){
     voteMsg.textContent="❌ Erreur, réessayez";
     submitVote.disabled = false;
+  }
+});
+
+// --- Popup suggestion ---
+const suggestBtn = document.getElementById("add-game-btn");
+const suggestPopup = document.getElementById("suggest-popup");
+const suggestClose = document.querySelector(".close-popup-suggest");
+const suggestPseudo = document.getElementById("suggest-pseudo");
+const suggestLink = document.getElementById("suggest-link");
+const submitSuggest = document.getElementById("submit-suggest");
+const suggestMsg = document.getElementById("suggest-msg");
+
+suggestBtn.addEventListener("click", ()=>{ suggestPopup.style.display="flex"; });
+suggestClose.addEventListener("click", ()=>{
+  suggestPopup.style.display="none";
+  suggestPseudo.value="";
+  suggestLink.value="";
+  suggestMsg.textContent="";
+});
+
+submitSuggest.addEventListener("click", async ()=>{
+  const pseudo = suggestPseudo.value.trim();
+  const link = suggestLink.value.trim();
+  if(!pseudo || !link){
+    suggestMsg.textContent="⚠️ Tous les champs sont obligatoires !";
+    return;
+  }
+  suggestMsg.textContent="⏳ Envoi...";
+  submitSuggest.disabled=true;
+
+  try{
+    await fetch("https://formspree.io/f/manlywdn",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({
+        type:"suggestion",
+        pseudo: pseudo,
+        lien: link,
+        date: new Date().toISOString()
+      })
+    });
+    suggestMsg.textContent="✅ Suggestion envoyée !";
+  }catch(e){
+    suggestMsg.textContent="❌ Erreur, réessayez";
+    submitSuggest.disabled=false;
   }
 });
 </script>
