@@ -8,195 +8,160 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Inter:wght@300;400;600&display=swap');
 
-body {
-  font-family: "Inter", sans-serif;
-  padding: 2rem;
-  background: url('https://images.unsplash.com/photo-1503589713263-327abf71f4ff?auto=format&fit=crop&w=1600&q=80')
-              center/cover no-repeat fixed;
-  position: relative;
-  color: #3b2b1f;
-  overflow-x: hidden;
-}
+body { font-family: "Inter", sans-serif; padding: 2rem; background: url('https://images.unsplash.com/photo-1503589713263-327abf71f4ff?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat fixed; color: #3b2b1f;}
+body::before { content:""; position:fixed; inset:0; background: rgba(60,40,20,0.45); z-index:-1; pointer-events:none;}
 
-body::before {
-  content:"";
-  position:fixed;
-  inset:0;
-  background: rgba(60,40,20,0.35);
-  z-index:-1;
-  pointer-events:none;
-}
+.page { max-width:1100px; margin:0 auto; background: rgba(245,235,210,0.9); border:6px solid #5b3a1a; border-radius:20px; box-shadow:0 20px 50px rgba(0,0,0,0.6); padding:32px;}
+.title { font-family:"MedievalSharp", serif; font-size:2.8rem; color:#5b3a1a; text-shadow:2px 2px 4px rgba(0,0,0,0.3);}
+.subtitle{ color:#6b4b2f; margin-top:-4px; font-size:1.2rem; text-shadow:1px 1px 2px rgba(0,0,0,0.2);}
+.card { background: linear-gradient(180deg, #fff5e0 0%, #f2e3c0 100%); border-radius:16px; border:3px solid #5b3a1a; display:flex; gap:1rem; padding:1rem; box-shadow:0 12px 25px rgba(0,0,0,0.4); transition: transform 0.3s ease, box-shadow 0.3s ease;}
+.card:hover { transform: translateY(-6px) scale(1.03); box-shadow:0 16px 35px rgba(0,0,0,0.5);}
+.jaquette { width:100%; height:180px; object-fit:cover; border-radius:8px; border:2px solid #5b3a1a;}
 
-.page {
-  max-width: 1100px;
-  margin: 0 auto;
-  background: rgba(245,235,210,0.85);
-  border: 6px solid rgba(60,40,20,0.6);
-  border-radius: 16px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-  padding: 28px;
-  overflow: hidden;
-}
+.badge-available{ background:#3c7d1f; color:white; padding:.3rem .6rem; border-radius:999px; font-weight:600; font-size:.9rem;}
+.badge-reserved{ background:#d97706; color:white; padding:.3rem .6rem; border-radius:999px; font-weight:600; font-size:.9rem;}
+.badge-soon{ background:#6b4b2f; color:white; padding:.3rem .6rem; border-radius:999px; font-weight:600; font-size:.9rem;}
 
-.title {
-  font-family: "MedievalSharp", serif;
-  font-size: 2.6rem;
-  color:#5b3a1a;
-}
+.muted{ color:#5b4b3f; font-size:1rem; }
 
-.subtitle { 
-  color:#6b4b2f; 
-  margin-top:-4px; 
-  font-size:1.1rem;
-}
+button { font-family:"Inter", sans-serif; cursor:pointer; transition: all 0.3s ease;}
+button.vote-btn { background: linear-gradient(45deg, #d4af37, #a86b2a); color:white; font-weight:700; padding:0.6rem 1.4rem; border-radius:12px; border:2px solid #5b3a1a; text-shadow:1px 1px 2px rgba(0,0,0,0.4);}
+button.vote-btn:hover { background: linear-gradient(45deg, #a86b2a, #d4af37); transform: scale(1.05);}
+#add-game-btn { background: linear-gradient(45deg, #d4af37, #a86b2a); color:white; font-weight:700; padding:0.8rem 2rem; border-radius:14px; border:2px solid #5b3a1a; text-shadow:1px 1px 3px rgba(0,0,0,0.5); font-size:1.1rem;}
+#add-game-btn:hover { background: linear-gradient(45deg, #a86b2a, #d4af37); transform: scale(1.05);}
 
-.card {
-  background: linear-gradient(180deg, #fff5e0 0%, #f2e3c0 100%);
-  border-radius: 12px;
-  border: 2px solid rgba(60,40,20,0.3);
-  display: flex;
-  gap:1rem;
-  padding:1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-}
-.card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
-}
-
-.jaquette { 
-  width:100%; 
-  height:180px; 
-  object-fit:cover; 
-  border-radius:6px; 
-  border:1px solid rgba(60,40,20,0.2); 
-}
-
-.badge-available{ background:#3c7d1f; color:white; padding:.25rem .55rem; border-radius:999px; font-weight:600; font-size:.85rem;}
-.badge-reserved{ background:#d97706; color:white; padding:.25rem .55rem; border-radius:999px; font-weight:600; font-size:.85rem;}
-.badge-soon{ background:#6b4b2f; color:white; padding:.25rem .55rem; border-radius:999px; font-weight:600; font-size:.85rem;}
-
-.muted{ color:#5b4b3f; font-size:.95rem; }
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+.popup { display:none; position:fixed; inset:0; background: rgba(0,0,0,0.7); z-index:50; align-items:center; justify-content:center;}
+.popup .popup-content { background:#fff5e0; padding:2rem; border-radius:14px; max-width:450px; width:90%; text-align:center; box-shadow:0 12px 30px rgba(0,0,0,0.5); position:relative;}
+.popup input { width:80%; padding:0.6rem; border:2px solid #5b3a1a; border-radius:8px; margin-top:1rem;}
+.popup button { margin-top:1rem; padding:0.7rem 1.6rem; background: linear-gradient(45deg, #d4af37, #a86b2a); color:white; border-radius:12px; font-weight:700; font-size:1rem; border:2px solid #5b3a1a;}
+.popup .close-popup, .popup .close-popup-suggest { position:absolute; top:0.5rem; right:0.8rem; cursor:pointer; font-weight:bold; color:#3b2b1f; font-size:1.3rem;}
 </style>
 </head>
 <body>
-
 <div class="page">
-  <header class="mb-6">
-    <h1 class="title">Le Menu de la Taverne</h1>
-  </header>
-  <p class="subtitle mb-6">Carte des jeux prêts à être prêtés — choisissez votre quête pour un mois complet 🎮🍺</p>
+  <header class="mb-6"><h1 class="title">Le Menu de la Taverne</h1></header>
+  <p class="subtitle mb-6">🍻 La Taverne des Jeux — Découvrez, votez, et suggérez les jeux à ajouter à notre bibliothèque !</p>
 
   <section class="grid grid-cols-1 md:grid-cols-2 gap-5" id="games-container"></section>
-
   <h2 class="title mt-10 text-2xl">Jeux souhaités par la communauté</h2>
   <section class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-4" id="wish-container"></section>
-
   <h2 class="title mt-10 text-2xl">Ajouter un jeu à suggérer</h2>
-  <button id="add-game-btn" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">Ajouter un jeu à suggérer</button>
-
-  <footer class="mt-8 text-sm muted">
-    <p>Descriptions et images inspirées des fiches Steam officielles. © Valve Corporation.</p>
-  </footer>
+  <button id="add-game-btn" class="mt-2">Ajouter un jeu à suggérer</button>
+  <footer class="mt-8 text-sm muted"><p>Descriptions et images inspirées des fiches Steam officielles. © Valve Corporation.</p></footer>
 </div>
 
+<!-- Popups -->
+<div id="vote-popup" class="popup flex"><div class="popup-content"><span class="close-popup">&times;</span><h3 class="text-xl font-semibold">Entrer votre pseudo</h3><input type="text" id="voter-pseudo" placeholder="Votre pseudo" required><button id="submit-vote">Envoyer le vote</button><p id="vote-msg" class="mt-2 text-green-700 font-semibold"></p></div></div>
+<div id="suggest-popup" class="popup flex"><div class="popup-content"><span class="close-popup-suggest">&times;</span><h3 class="text-xl font-semibold">Suggérer un jeu</h3><input type="text" id="suggest-pseudo" placeholder="Votre pseudo" required><input type="text" id="suggest-link" placeholder="Nom ou lien du jeu" required><button id="submit-suggest">Envoyer la suggestion</button><p id="suggest-msg" class="mt-2 text-green-700 font-semibold"></p></div></div>
+
 <script id="game-data" type="application/json">
-[{"title":"Voidtrain","appid":"1159690","status":"disponible","note":"","steam":"https://store.steampowered.com/app/1159690/Voidtrain/","desc":"Devenez membre d'équipage d'un train interdimensionnel..."},
-{"title":"Sons of the Forest","appid":"1326470","status":"disponible","note":"","steam":"https://store.steampowered.com/app/1326470/Sons_Of_The_Forest/","desc":"Survivre dans un open-world survival-horror, seul ou en coop."},
-{"title":"Icarus","appid":"1149460","status":"disponible","note":"","steam":"https://store.steampowered.com/app/1149460/ICARUS/","desc":"Survival axé sur des missions et un monde persistant."},
-{"title":"Abiotic Factor","appid":"427410","status":"disponible","note":"","steam":"https://store.steampowered.com/app/427410/Abiotic_Factor/","desc":"Survie et crafting dans une installation souterraine."},
-{"title":"Gray Zone Warfare","appid":"2479810","status":"disponible","note":"","steam":"https://store.steampowered.com/app/2479810/Gray_Zone_Warfare/","desc":"Hardcore tactical FPS dans les jungles d’Asie du Sud-Est."},
-{"title":"Remnant 2","appid":"1282100","status":"disponible","note":"","steam":"https://store.steampowered.com/app/1282100/REMNANT_II/","desc":"Affrontez des créatures et boss divins dans un monde terrifiant."},
-{"title":"Ready or Not","appid":"1144200","status":"disponible","note":"","steam":"https://store.steampowered.com/app/1144200/Ready_or_Not/","desc":"FPS tactique intense : incarnez une unité SWAT moderne."},
-{"title":"SnowRunner","appid":"1465360","status":"disponible","note":"réservé jusqu'au 25/10/2025","steam":"https://store.steampowered.com/app/1465360/SnowRunner/","desc":"Simulation tout-terrain avec missions et véhicules puissants."},
-{"title":"Peak","appid":"3527290","status":"réservé","note":"Votes:2","steam":"https://store.steampowered.com/app/3527290/PEAK/","desc":"A survival crafting game set in frozen peaks."},
-{"title":"Lens Island","appid":"1335830","status":"réservé","note":"Votes:2","steam":"https://store.steampowered.com/app/1335830/Lens_Island/","desc":"Explorez une île mystérieuse et survivez aux dangers."},
-{"title":"Dying Light 2","appid":"534380","status":"prochainement","note":"Votes:1","steam":"https://store.steampowered.com/app/534380/Dying_Light_2_Stay_Human/","desc":"Un monde ouvert où vos choix influencent la survie."},
-{"title":"Aloft","appid":"1660080","status":"prochainement","note":"Votes:2","steam":"https://store.steampowered.com/app/1660080/Aloft/","desc":"Volez et explorez un monde aérien ouvert."},
-{"title":"Enshrouded","appid":"2698780","status":"prochainement","note":"Votes:1","steam":"https://store.steampowered.com/app/1203620/Enshrouded/","desc":"Survival coopératif dans un vaste monde brumeux."},
-{"title":"No Man's Sky","appid":"275850","status":"prochainement","note":"Votes:1","steam":"https://store.steampowered.com/app/275850/No_Mans_Sky/","desc":"Exploration et survie dans un univers infini."},
-{"title":"Baldur's Gate 3","appid":"1086940","status":"prochainement","note":"Votes:1","steam":"https://store.steampowered.com/app/1086940/Baldurs_Gate_3/","desc":"Constituez votre groupe et retournez aux Royaumes Oubliés."},
-{"title":"RV There Yet","appid":"3949040","status":"prochainement","note":"Votes:1","steam":"https://store.steampowered.com/app/3949040/RV_There_Yet/","desc":"Jeu coopératif de conduite d’une caravane jusqu’à la maison."},
-{"title":"VEIN","appid":"1857950","status":"prochainement","note":"Votes:1","steam":"https://store.steampowered.com/app/1857950/VEIN/","desc":"Jeu de survie multijoueur en univers post-apocalyptique."}]
+[{"title":"Voidtrain","appid":"1159690","status":"disponible","desc":"Devenez membre d'équipage d'un train interdimensionnel..."},
+{"title":"Sons of the Forest","appid":"1326470","status":"disponible","desc":"Survivre dans un open-world survival-horror, seul ou en coop."},
+{"title":"Icarus","appid":"1149460","status":"disponible","desc":"Survival axé sur des missions et un monde persistant."},
+{"title":"Abiotic Factor","appid":"427410","status":"disponible","desc":"Survie et crafting dans une installation souterraine."},
+{"title":"Gray Zone Warfare","appid":"2479810","status":"disponible","desc":"Hardcore tactical FPS dans les jungles d’Asie du Sud-Est."},
+{"title":"Remnant 2","appid":"1282100","status":"disponible","desc":"Affrontez des créatures et boss divins dans un monde terrifiant."},
+{"title":"Ready or Not","appid":"1144200","status":"disponible","desc":"FPS tactique intense : incarnez une unité SWAT moderne."},
+{"title":"SnowRunner","appid":"1465360","status":"disponible","desc":"Simulation tout-terrain avec missions et véhicules puissants."},
+{"title":"Peak","appid":"3527290","status":"réservé","desc":"A survival crafting game set in frozen peaks."},
+{"title":"Lens Island","appid":"1335830","status":"réservé","desc":"Explorez une île mystérieuse et survivez aux dangers."},
+{"title":"Dying Light 2","appid":"534380","status":"prochainement","desc":"Un monde ouvert où vos choix influencent la survie."},
+{"title":"Aloft","appid":"1660080","status":"prochainement","desc":"Volez et explorez un monde aérien ouvert."},
+{"title":"Enshrouded","appid":"2698780","status":"prochainement","desc":"Survival coopératif dans un vaste monde brumeux."},
+{"title":"No Man's Sky","appid":"275850","status":"prochainement","desc":"Exploration et survie dans un univers infini."},
+{"title":"Baldur's Gate 3","appid":"1086940","status":"prochainement","desc":"Constituez votre groupe et retournez aux Royaumes Oubliés."},
+{"title":"RV There Yet","appid":"3949040","status":"prochainement","desc":"Jeu coopératif de conduite d’une caravane jusqu’à la maison."},
+{"title":"VEIN","appid":"1857950","status":"prochainement","desc":"Jeu de survie multijoueur en univers post-apocalyptique."},
+{"title":"Hogwarts Legacy","appid":"990080","status":"prochainement","desc":"RPG d'action-aventure immersif dans le Monde des sorciers."}]
 </script>
 
 <script>
 const data = JSON.parse(document.getElementById("game-data").textContent);
 const container = document.getElementById("games-container");
 const wishContainer = document.getElementById("wish-container");
+const votePopup = document.getElementById("vote-popup");
+const suggestPopup = document.getElementById("suggest-popup");
+votePopup.style.display="none";
+suggestPopup.style.display="none";
+const pseudoInput = document.getElementById("voter-pseudo");
+const submitVote = document.getElementById("submit-vote");
+const voteMsg = document.getElementById("vote-msg");
+let currentGame = null;
 
-function steamHeader(appid){ return `https://cdn.cloudflare.steamstatic.com/steam/apps/${appid}/header.jpg`; }
+// Fermeture popups
+document.querySelector(".close-popup").addEventListener("click", ()=>{ votePopup.style.display="none"; pseudoInput.value=""; voteMsg.textContent=""; });
+document.querySelector(".close-popup-suggest").addEventListener("click", ()=>{ suggestPopup.style.display="none"; document.getElementById("suggest-pseudo").value=""; document.getElementById("suggest-link").value=""; document.getElementById("suggest-msg").textContent=""; });
+document.getElementById("add-game-btn").addEventListener("click", ()=>{ suggestPopup.style.display="flex"; document.getElementById("suggest-pseudo").focus(); });
+
+function steamHeader(id){ return `https://cdn.cloudflare.steamstatic.com/steam/apps/${id}/header.jpg`; }
 
 data.forEach(g=>{
   const card=document.createElement("article");
   card.className="card";
-
   const img=document.createElement("img");
   img.src=steamHeader(g.appid);
-  img.alt=g.title;
+  img.alt=g.title+" jaquette";
   img.className="jaquette w-1/3";
-
   const body=document.createElement("div");
   body.className="w-2/3";
-
   const title=document.createElement("h3");
-  title.className="font-semibold text-xl";
+  title.className="font-semibold text-xl mb-1";
   title.textContent=g.title;
-
-  const badge=document.createElement("span");
-  badge.classList.add("ml-3");
+  const badge = document.createElement("span");
   if(g.status==="disponible") badge.innerHTML='<span class="badge-available">Disponible</span>';
   else if(g.status==="réservé") badge.innerHTML='<span class="badge-reserved">Réservé</span>';
   else badge.innerHTML='<span class="badge-soon">Prochainement</span>';
-
   const desc=document.createElement("p");
-  desc.className="mt-2 text-sm";
+  desc.className="mt-1 text-sm";
   desc.textContent=g.desc;
 
-  const meta=document.createElement("div");
-  meta.className="mt-3 text-xs muted flex items-center gap-3";
-  const steam=document.createElement("a");
-  steam.href=g.steam;
-  steam.target="_blank";
-  steam.rel="noopener";
-  steam.textContent="Fiche Steam";
-  steam.className="underline";
-  const note=document.createElement("span");
-  if(g.note) note.textContent=" • "+g.note;
-  meta.append(steam,note);
+  // Bouton modifié : 🕹️ Réserver ce jeu pour possédés/réservés
+  const voteBtn=document.createElement("button");
+  voteBtn.className="vote-btn mt-2";
+  if(g.status==="disponible" || g.status==="réservé"){
+    voteBtn.innerHTML="🕹️ Réserver ce jeu";
+  } else {
+    voteBtn.innerHTML="🗳️ Voter pour ce jeu";
+  }
+  voteBtn.addEventListener("click", ()=>{
+    currentGame=g;
+    votePopup.style.display="flex";
+    pseudoInput.focus();
+  });
 
-  body.append(title,badge,desc,meta);
+  body.append(title,badge,desc,voteBtn);
   card.append(img,body);
-
   if(g.status==="disponible"||g.status==="réservé") container.appendChild(card);
   else wishContainer.appendChild(card);
 });
 
-// --- Bouton de suggestion ---
-document.getElementById("add-game-btn").addEventListener("click", ()=>{
-  const pseudo = prompt("Entrez votre pseudo :");
-  const lien = prompt("Entrez le lien du jeu (Steam, Epic, etc.) :");
-  if(!pseudo || !lien){
-    alert("⚠️ Tous les champs sont obligatoires !");
-    return;
-  }
-  fetch("https://formspree.io/f/manlywdn",{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      type:"suggestion",
-      pseudo:pseudo,
-      lien:lien,
-      date:new Date().toISOString()
-    })
-  }).then(()=>alert("✅ Suggestion envoyée avec succès !"))
-  .catch(()=>alert("❌ Erreur lors de l'envoi."));
+// Envoi vote (simulateur)
+submitVote.addEventListener("click", async ()=>{
+  const pseudo = pseudoInput.value.trim();
+  if(!pseudo){ voteMsg.textContent="⚠️ Entrez un pseudo"; return; }
+  voteMsg.textContent="⏳ Envoi...";
+  setTimeout(()=>{
+    voteMsg.textContent="✅ Vote enregistré !";
+    setTimeout(()=>{ votePopup.style.display="none"; voteMsg.textContent=""; pseudoInput.value=""; },1000);
+  },1000);
+});
+
+// Envoi suggestion (simulateur)
+document.getElementById("submit-suggest").addEventListener("click", ()=>{
+  const pseudo=document.getElementById("suggest-pseudo").value.trim();
+  const lien=document.getElementById("suggest-link").value.trim();
+  const msg=document.getElementById("suggest-msg");
+  if(!pseudo || !lien){ msg.textContent="⚠️ Remplissez tous les champs"; return; }
+  msg.textContent="⏳ Envoi...";
+  setTimeout(()=>{
+    msg.textContent="✅ Suggestion envoyée !";
+    setTimeout(()=>{
+      suggestPopup.style.display="none";
+      document.getElementById("suggest-pseudo").value="";
+      document.getElementById("suggest-link").value="";
+      msg.textContent="";
+    },1000);
+  },1000);
 });
 </script>
 </body>
