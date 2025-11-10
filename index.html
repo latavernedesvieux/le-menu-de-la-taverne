@@ -204,9 +204,10 @@ button.vote-btn:hover { background: linear-gradient(45deg, #a86b2a, #d4af37); tr
 {"title":"Gray Zone Warfare","appid":"2479810","status":"disponible","desc":"Hardcore tactical FPS dans les jungles d’Asie du Sud-Est.","copies":1},
 {"title":"Remnant 2","appid":"1282100","status":"disponible","desc":"Affrontez des créatures et boss divins dans un monde terrifiant.","copies":1},
 {"title":"Ready or Not","appid":"1144200","status":"disponible","desc":"FPS tactique intense : incarnez une unité SWAT moderne.","copies":1},
-{"title":"SnowRunner","appid":"1465360","status":"Réservé","desc":"Simulation tout-terrain avec missions et véhicules puissants.","copies":1},
 {"title":"Peak","appid":"3527290","status":"disponible","desc":"A survival crafting game set in frozen peaks.","copies":1},
+{"title":"Green Hell","appid":"815370","status":"disponible","desc":"Survival réaliste en plein cœur de l’Amazonie, affrontez la nature et vos propres limites.","copies":1},
 {"title":"Lens Island","appid":"1335830","status":"disponible","desc":"Explorez une île mystérieuse et survivez aux dangers.","copies":2},
+{"title":"SnowRunner","appid":"1465360","status":"Réservé","desc":"Simulation tout-terrain avec missions et véhicules puissants.","copies":1},
 {"title":"Dying Light 2","appid":"534380","status":"prochainement","desc":"Un monde ouvert où vos choix influencent la survie.","copies":1},
 {"title":"Enshrouded","appid":"1203620","status":"Réservé","desc":"Survival coopératif dans un vaste monde brumeux.","copies":1},
 {"title":"No Man's Sky","appid":"275850","status":"Réservé","desc":"Exploration et survie dans un univers infini.","copies":1},
@@ -221,7 +222,7 @@ button.vote-btn:hover { background: linear-gradient(45deg, #a86b2a, #d4af37); tr
 {"title":"Monster Hunter Rise","appid":"1446780","status":"Réservé","desc":"vous incarnez un chasseur, partez à la découverte de régions inexplorées et venez à bout de monstres redoutables au cours d'histoires inédites.","copies":1},
 {"title":"Phasmophobia","appid":"739630","status":"Réservé","desc":"La phasmophobie est une horreur psychologique coopérative en ligne pour 4 joueurs, où vous et votre équipe de membres d'enquêteurs paranormaux entrez dans des lieux hantés...","copies":1},
 {"title":"Jagged Alliance 3","appid":"1084160","status":"Réservé","desc":"Engagez des mercenaires, rencontrez de sacrés personnages et combattez au tour par tour dans ce nouvel opus d’une franchise culte.","copies":1},
-{"title":"Mortal Kombat 11","appid":"976310","status":"Réservé","desc":"LMortal Kombat est de retour dans un nouvel épisode de la série emblématique, plus explosif que jamais !","copies":1},
+{"title":"Mortal Kombat 11","appid":"976310","status":"Réservé","desc":"Mortal Kombat est de retour dans un nouvel épisode de la série emblématique, plus explosif que jamais !","copies":1},
 {"title":"Powerwash simulator 2","appid":"2968420","status":"Réservé","desc":"PowerWash Simulator revient avec des missions de nettoyage...","copies":1}]
 </script>
 
@@ -307,29 +308,33 @@ reserveForm.addEventListener("submit", e=>{
   }).then(response=>{
     if(response.ok){
       reserveMsg.textContent = "✅ Réservation envoyée !";
-      setTimeout(()=>{ popup.style.display="none"; reserveForm.reset(); },1500);
-    } else {
-      reserveMsg.textContent = "❌ Une erreur est survenue.";
-    }
-  });
+      setTimeout(()=>{ popup.style.display="none"; reserveMsg.textContent=""; }, 2000);
+      reserveForm.reset();
+    } else { reserveMsg.textContent="❌ Erreur lors de l'envoi."; }
+  }).catch(()=>{ reserveMsg.textContent="❌ Impossible d'envoyer."; });
 });
 
-// ==== Suggestion popup ====
-addGameBtn.addEventListener("click", ()=>{ suggestPopup.style.display="flex"; suggestPseudo.focus(); });
-closeSuggest.addEventListener("click", ()=>{ suggestPopup.style.display="none"; suggestPseudo.value=""; suggestLink.value=""; suggestMsg.textContent=""; });
+// ==== Suggestion ====
+addGameBtn.addEventListener("click", ()=> suggestPopup.style.display="flex");
+closeSuggest.addEventListener("click", ()=> suggestPopup.style.display="none");
+window.addEventListener("click", e=>{ if(e.target===suggestPopup) suggestPopup.style.display="none"; });
 
 submitSuggest.addEventListener("click", ()=>{
-  const pseudo = suggestPseudo.value.trim();
-  const lien = suggestLink.value.trim();
-  if(!pseudo || !lien){ suggestMsg.textContent="⚠️ Remplissez tous les champs"; return; }
-  suggestMsg.textContent="⏳ Envoi...";
-  setTimeout(()=>{
-    suggestMsg.textContent="✅ Suggestion envoyée !";
-    setTimeout(()=>{
-      suggestPopup.style.display="none";
-      suggestPseudo.value=""; suggestLink.value=""; suggestMsg.textContent="";
-    },1000);
-  },1000);
+  const pseudo=suggestPseudo.value.trim();
+  const link=suggestLink.value.trim();
+  if(!pseudo||!link){ suggestMsg.textContent="⚠️ Remplissez les champs."; return; }
+
+  fetch("https://formspree.io/f/XXXXXXX", {
+    method:"POST",
+    body: JSON.stringify({ pseudo, jeu: link }),
+    headers:{ "Accept":"application/json","Content-Type":"application/json" }
+  }).then(r=>{
+    if(r.ok){
+      suggestMsg.textContent="✅ Suggestion envoyée !";
+      setTimeout(()=>{ suggestPopup.style.display="none"; suggestMsg.textContent=""; },2000);
+      suggestPseudo.value=""; suggestLink.value="";
+    } else suggestMsg.textContent="❌ Erreur.";
+  }).catch(()=> suggestMsg.textContent="❌ Envoi impossible.");
 });
 </script>
 </body>
