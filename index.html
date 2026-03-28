@@ -3,89 +3,447 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Menu de la Taverne — Bibliothèque</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<title>La Taverne — Bibliothèque de Jeux</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-body {
-  font-family:"Inter",sans-serif;
-  background: url('https://cdna.artstation.com/p/assets/images/images/014/112/166/large/fabrice-levacher-taverne-couleur-ambiance.jpg') center/cover fixed;
-  margin:0; padding:0; color:#3b2b1f;
+:root {
+  --parchment: #f5e9cc;
+  --parchment-dark: #e8d5a8;
+  --ink: #2c1a0e;
+  --mahogany: #4a1f0a;
+  --amber: #b8621a;
+  --gold: #c9932a;
+  --gold-light: #e8b84b;
+  --available-bg: rgba(45,106,30,.28);
+  --available-col: #7ecf5a;
+  --available-border: rgba(80,160,45,.4);
+  --reserved-bg: rgba(160,69,14,.28);
+  --reserved-col: #f0905a;
+  --reserved-border: rgba(180,80,20,.4);
 }
-body::before {
-  content:""; position:fixed; inset:0;
-  background:rgba(60,40,20,0.5); z-index:-1;
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Lora',serif;min-height:100vh;color:var(--parchment);overflow-x:hidden;background:#100500;}
+
+/* BG */
+.bg-layer{position:fixed;inset:0;z-index:0;background:url('https://cdna.artstation.com/p/assets/images/images/014/112/166/large/fabrice-levacher-taverne-couleur-ambiance.jpg') center/cover no-repeat fixed;}
+.bg-layer::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,3,0,.75) 0%,rgba(20,8,2,.68) 50%,rgba(8,2,0,.82) 100%);}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:180px;}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 40%,rgba(5,1,0,.72) 100%);}
+
+/* PAGE */
+.page{position:relative;z-index:2;max-width:1380px;margin:0 auto;padding:2.5rem 2rem 4rem;}
+
+/* HEADER */
+header{text-align:center;padding:2.5rem 1rem 2rem;}
+.header-ornament{display:flex;align-items:center;justify-content:center;gap:1.2rem;margin-bottom:.6rem;}
+.ornament-line{flex:1;max-width:220px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.ornament-diamond{width:10px;height:10px;background:var(--gold-light);transform:rotate(45deg);box-shadow:0 0 12px var(--gold);}
+h1{font-family:'Cinzel Decorative',serif;font-size:clamp(2rem,5vw,3.8rem);color:var(--gold-light);text-shadow:0 0 30px rgba(200,140,30,.5),0 2px 8px rgba(0,0,0,.8);letter-spacing:.04em;line-height:1.15;}
+.subtitle{font-family:'Cinzel',serif;font-size:.9rem;color:var(--parchment-dark);letter-spacing:.25em;text-transform:uppercase;margin-top:.5rem;opacity:.75;}
+
+/* STATS */
+.stats-bar{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;margin:1.8rem auto 0;padding:1rem 2.5rem;background:rgba(20,7,0,.6);border:1px solid rgba(200,147,42,.28);border-radius:14px;backdrop-filter:blur(8px);max-width:640px;}
+.stat{text-align:center;}
+.stat-number{font-family:'Cinzel',serif;font-size:2rem;font-weight:700;color:var(--gold-light);line-height:1;text-shadow:0 0 18px rgba(200,140,30,.4);}
+.stat-label{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--parchment-dark);opacity:.65;margin-top:.2rem;}
+
+/* CONTROLS */
+.controls{display:flex;gap:.9rem;flex-wrap:wrap;margin:2.2rem 0 .9rem;align-items:center;}
+.search-wrap{flex:1;min-width:220px;position:relative;}
+.search-wrap svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--gold);opacity:.7;pointer-events:none;}
+input[type="search"]{width:100%;padding:.68rem 1rem .68rem 2.7rem;border-radius:10px;border:1.5px solid rgba(200,147,42,.35);background:rgba(12,4,0,.7);color:var(--parchment);font-family:'Lora',serif;font-size:.92rem;outline:none;backdrop-filter:blur(4px);transition:border-color .2s,box-shadow .2s;}
+input[type="search"]::placeholder{color:rgba(245,233,204,.35);}
+input[type="search"]:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,147,42,.18);}
+input[type="search"]::-webkit-search-cancel-button{display:none;}
+
+.status-filters{display:flex;gap:.4rem;}
+.view-toggle{display:flex;gap:.3rem;background:rgba(12,4,0,.6);border:1.5px solid rgba(200,147,42,.3);border-radius:10px;padding:.22rem;}
+.view-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:7px;border:none;background:transparent;color:rgba(200,147,42,.5);cursor:pointer;transition:all .2s;}
+.view-btn.active,.view-btn:hover{background:rgba(200,147,42,.18);color:var(--gold-light);}
+.sort-select{padding:.55rem 2.2rem .55rem 1rem;border-radius:10px;border:1.5px solid rgba(200,147,42,.35);background:rgba(12,4,0,.7) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9932a' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 10px center;color:var(--parchment-dark);font-family:'Cinzel',serif;font-size:.76rem;letter-spacing:.08em;cursor:pointer;outline:none;-webkit-appearance:none;backdrop-filter:blur(4px);transition:border-color .2s;}
+.sort-select:focus{border-color:var(--gold);}
+.sort-select option{background:#110400;color:var(--parchment);}
+
+/* FILTER BUTTONS (shared style) */
+.filter-btn{padding:.4rem .88rem;border-radius:999px;border:1.5px solid rgba(200,147,42,.28);background:rgba(12,4,0,.55);color:rgba(245,233,204,.55);font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;white-space:nowrap;backdrop-filter:blur(4px);}
+.filter-btn:hover{border-color:rgba(200,147,42,.6);color:var(--gold-light);}
+.filter-btn.active{background:rgba(200,147,42,.18);border-color:var(--gold);color:var(--gold-light);box-shadow:0 0 10px rgba(200,147,42,.18);}
+.filter-btn.status-pill.active{background:var(--gold);border-color:var(--gold);color:var(--mahogany);font-weight:700;box-shadow:0 0 16px rgba(200,147,42,.38);}
+
+/* GENRE ROW */
+.genre-row{display:flex;gap:.42rem;flex-wrap:wrap;align-items:center;margin-bottom:.7rem;}
+.genre-row-label{font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(200,147,42,.5);margin-right:.2rem;}
+
+.divider-thin{height:1px;background:linear-gradient(90deg,transparent,rgba(200,147,42,.18),transparent);margin:.5rem 0 1.1rem;}
+.results-count{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.14em;color:rgba(245,233,204,.4);text-transform:uppercase;margin-bottom:1rem;}
+
+/* ======= LIST VIEW ======= */
+#games-container.view-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:1.3rem;}
+.card-list{display:flex;border-radius:16px;overflow:hidden;border:1.5px solid rgba(200,147,42,.2);background:linear-gradient(135deg,rgba(30,11,2,.91),rgba(16,5,1,.95));box-shadow:0 8px 32px rgba(0,0,0,.55),inset 0 1px 0 rgba(200,147,42,.1);cursor:default;transition:transform .28s cubic-bezier(.34,1.56,.64,1),border-color .25s,box-shadow .25s;backdrop-filter:blur(6px);opacity:0;transform:translateY(18px);animation:cardReveal .4s forwards;}
+.card-list:hover{transform:translateY(-5px) scale(1.015);border-color:rgba(200,147,42,.55);box-shadow:0 18px 46px rgba(0,0,0,.6),0 0 22px rgba(200,147,42,.14),inset 0 1px 0 rgba(200,147,42,.25);}
+
+/* image side */
+.jaquette-wrap{position:relative;width:165px;min-width:165px;overflow:hidden;}
+.jaquette{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s;}
+.card-list:hover .jaquette{transform:scale(1.07);}
+.jaquette-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 52%,rgba(16,5,1,.95));pointer-events:none;}
+
+.steam-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:transparent;transition:background .25s;z-index:3;}
+.jaquette-wrap:hover .steam-overlay{background:rgba(0,0,0,.58);}
+.steam-overlay a{opacity:0;transform:scale(.88);transition:opacity .22s,transform .22s;display:flex;flex-direction:column;align-items:center;gap:.32rem;text-decoration:none;}
+.jaquette-wrap:hover .steam-overlay a{opacity:1;transform:scale(1);}
+.steam-overlay a span{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.12em;color:#fff;text-transform:uppercase;}
+.steam-icon-circle{width:38px;height:38px;background:linear-gradient(135deg,#1b2838,#2a475e);border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.22);box-shadow:0 4px 14px rgba(0,0,0,.5);}
+
+/* card body */
+.card-body-inner{flex:1;padding:1rem 1.1rem;display:flex;flex-direction:column;gap:.38rem;}
+.card-title{font-family:'Cinzel',serif;font-size:.98rem;font-weight:700;color:var(--parchment);line-height:1.25;letter-spacing:.02em;}
+.card-desc{font-size:.8rem;color:rgba(245,233,204,.6);font-style:italic;line-height:1.5;flex:1;}
+.genre-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.1rem;}
+.genre-tag{padding:.16rem .58rem;border-radius:999px;font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.07em;background:rgba(200,147,42,.09);border:1px solid rgba(200,147,42,.22);color:rgba(200,147,42,.78);cursor:pointer;transition:all .18s;white-space:nowrap;}
+.genre-tag:hover{background:rgba(200,147,42,.2);border-color:rgba(200,147,42,.52);color:var(--gold-light);}
+.genre-tag.hl{background:rgba(200,147,42,.22);border-color:var(--gold);color:var(--gold-light);}
+.card-footer-row{display:flex;align-items:center;justify-content:space-between;gap:.45rem;margin-top:.3rem;flex-wrap:wrap;}
+.badge{display:inline-flex;align-items:center;gap:.3rem;padding:.24rem .68rem;border-radius:999px;font-family:'Cinzel',serif;font-size:.64rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;}
+.badge-available{background:var(--available-bg);color:var(--available-col);border:1px solid var(--available-border);}
+.badge-reserved{background:var(--reserved-bg);color:var(--reserved-col);border:1px solid var(--reserved-border);}
+.badge-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.badge-available .badge-dot{background:var(--available-col);box-shadow:0 0 5px var(--available-col);}
+.badge-reserved .badge-dot{background:var(--reserved-col);box-shadow:0 0 5px var(--reserved-col);}
+.copies-pill{font-family:'Cinzel',serif;font-size:.64rem;color:rgba(200,147,42,.6);letter-spacing:.06em;}
+.steam-link-btn{display:inline-flex;align-items:center;gap:.28rem;padding:.24rem .62rem;border-radius:7px;background:rgba(27,40,56,.65);border:1px solid rgba(100,160,200,.28);color:rgba(170,210,235,.8);font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.07em;text-decoration:none;transition:all .2s;white-space:nowrap;}
+.steam-link-btn:hover{background:rgba(27,40,56,1);border-color:rgba(100,180,220,.7);color:#cceeff;box-shadow:0 0 10px rgba(100,160,200,.2);}
+
+/* ======= GRID VIEW ======= */
+#games-container.view-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1.2rem;}
+.card-grid{display:flex;flex-direction:column;border-radius:16px;overflow:hidden;border:1.5px solid rgba(200,147,42,.2);background:linear-gradient(180deg,rgba(26,9,1,.93),rgba(14,4,1,.97));box-shadow:0 8px 32px rgba(0,0,0,.55),inset 0 1px 0 rgba(200,147,42,.1);cursor:default;transition:transform .3s cubic-bezier(.34,1.56,.64,1),border-color .25s,box-shadow .25s;backdrop-filter:blur(6px);opacity:0;transform:translateY(18px);animation:cardReveal .4s forwards;}
+.card-grid:hover{transform:translateY(-7px) scale(1.025);border-color:rgba(200,147,42,.62);box-shadow:0 22px 52px rgba(0,0,0,.68),0 0 28px rgba(200,147,42,.18),inset 0 1px 0 rgba(200,147,42,.3);}
+.card-grid .img-top{position:relative;height:122px;overflow:hidden;flex-shrink:0;}
+.card-grid .img-top img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s;}
+.card-grid:hover .img-top img{transform:scale(1.09);}
+.card-grid .img-top::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(14,4,1,.97));pointer-events:none;}
+.status-ribbon{position:absolute;top:9px;right:9px;z-index:3;padding:.2rem .58rem;border-radius:999px;font-family:'Cinzel',serif;font-size:.58rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+.status-ribbon.avail{background:rgba(45,106,30,.78);color:#b0f08c;border:1px solid rgba(80,160,45,.5);backdrop-filter:blur(4px);}
+.status-ribbon.res{background:rgba(160,69,14,.78);color:#ffc4a0;border:1px solid rgba(180,80,20,.5);backdrop-filter:blur(4px);}
+/* grid steam overlay */
+.grid-steam-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:transparent;transition:background .25s;z-index:2;}
+.card-grid:hover .grid-steam-overlay{background:rgba(0,0,0,.52);}
+.grid-steam-overlay a{opacity:0;transform:translateY(5px);transition:opacity .22s,transform .22s;display:flex;flex-direction:column;align-items:center;gap:.28rem;text-decoration:none;}
+.card-grid:hover .grid-steam-overlay a{opacity:1;transform:translateY(0);}
+.grid-steam-overlay a span{font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.12em;color:#fff;text-transform:uppercase;}
+.card-grid .card-body-inner{flex:1;padding:.82rem .9rem;display:flex;flex-direction:column;gap:.32rem;}
+.card-grid .card-title{font-family:'Cinzel',serif;font-size:.87rem;font-weight:700;color:var(--parchment);line-height:1.3;letter-spacing:.02em;}
+.card-grid .card-desc{font-size:.75rem;color:rgba(245,233,204,.55);font-style:italic;line-height:1.45;flex:1;}
+.card-grid .genre-tags{display:flex;flex-wrap:wrap;gap:.26rem;margin-top:.1rem;}
+.card-grid .genre-tag{padding:.13rem .48rem;border-radius:999px;font-family:'Cinzel',serif;font-size:.56rem;letter-spacing:.06em;background:rgba(200,147,42,.09);border:1px solid rgba(200,147,42,.2);color:rgba(200,147,42,.73);cursor:pointer;transition:all .18s;white-space:nowrap;}
+.card-grid .genre-tag:hover{background:rgba(200,147,42,.2);border-color:rgba(200,147,42,.5);color:var(--gold-light);}
+.card-grid .genre-tag.hl{background:rgba(200,147,42,.22);border-color:var(--gold);color:var(--gold-light);}
+.card-grid .card-footer-row{display:flex;align-items:center;justify-content:space-between;margin-top:.35rem;gap:.3rem;flex-wrap:wrap;}
+.card-grid .copies-pill{font-family:'Cinzel',serif;font-size:.6rem;color:rgba(200,147,42,.58);letter-spacing:.06em;}
+.card-grid .steam-link-btn{padding:.2rem .52rem;font-size:.58rem;}
+
+/* EMPTY */
+.empty-state{grid-column:1/-1;text-align:center;padding:4rem 2rem;color:rgba(245,233,204,.38);}
+.empty-state p{font-family:'Cinzel',serif;font-size:.95rem;letter-spacing:.1em;margin-top:1rem;}
+
+@keyframes cardReveal{to{opacity:1;transform:translateY(0);}}
+
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:#0d0400;}
+::-webkit-scrollbar-thumb{background:var(--mahogany);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--amber);}
+
+footer{text-align:center;padding:2rem 1rem;font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(200,147,42,.35);}
+
+@media(max-width:640px){
+  .page{padding:1.5rem 1rem 3rem;}
+  #games-container.view-list{grid-template-columns:1fr;}
+  .jaquette-wrap{width:120px;min-width:120px;}
+  .controls{flex-direction:column;}
+  h1{font-size:2rem;}
 }
-.page { max-width:1200px; margin:2rem auto; background:rgba(245,235,210,0.85); border:6px solid #5b3a1a; border-radius:24px; padding:40px;}
-.title { font-family:"MedievalSharp",serif; font-size:3rem; color:#5b3a1a; }
-.card { display:flex; gap:1rem; padding:1rem; background:linear-gradient(180deg,#fff5e0,#f2e3c0); border-radius:20px; border:2px solid #5b3a1a; box-shadow:0 10px 25px rgba(0,0,0,.35); cursor:pointer; transition:.3s; }
-.card:hover { transform:translateY(-4px) scale(1.02); }
-.jaquette { width:200px; height:120px; object-fit:cover; border-radius:12px; border:2px solid #5b3a1a; }
-.badge-available {background:#3c7d1f;color:#fff;padding:.3rem .7rem;border-radius:999px;font-weight:600;}
-.badge-reserved {background:#d97706;color:#fff;padding:.3rem .7rem;border-radius:999px;font-weight:600;}
 </style>
 </head>
 <body>
+
+<div class="bg-layer"></div>
+<div class="grain"></div>
+<div class="vignette"></div>
+
 <div class="page">
-  <h1 class="title mb-6">Le Menu de la Taverne</h1>
-  <section id="games-container" class="grid grid-cols-1 md:grid-cols-2 gap-6"></section>
+  <header>
+    <div class="header-ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line"></div>
+    </div>
+    <h1>La Taverne</h1>
+    <p class="subtitle">Bibliothèque des Aventures</p>
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-number" id="stat-total">—</div><div class="stat-label">Titres</div></div>
+      <div class="stat"><div class="stat-number" id="stat-available">—</div><div class="stat-label">Disponibles</div></div>
+      <div class="stat"><div class="stat-number" id="stat-reserved">—</div><div class="stat-label">Réservés</div></div>
+    </div>
+  </header>
+
+  <div class="controls">
+    <div class="search-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="search" id="search-input" placeholder="Chercher un jeu, un genre…" autocomplete="off">
+    </div>
+    <div class="status-filters">
+      <button class="filter-btn status-pill active" data-status="all">Tous</button>
+      <button class="filter-btn status-pill" data-status="disponible">Disponible</button>
+      <button class="filter-btn status-pill" data-status="reserve">Réservé</button>
+    </div>
+    <select class="sort-select" id="sort-select">
+      <option value="default">Ordre original</option>
+      <option value="alpha">A → Z</option>
+      <option value="available">Disponibles d'abord</option>
+      <option value="reserved">Réservés d'abord</option>
+    </select>
+    <div class="view-toggle">
+      <button class="view-btn active" id="btn-list" title="Vue liste">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      </button>
+      <button class="view-btn" id="btn-grid" title="Vue cartes">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Genre filters -->
+  <div class="genre-row" id="genre-row">
+    <span class="genre-row-label">Genre :</span>
+  </div>
+
+  <div class="divider-thin"></div>
+  <div class="results-count" id="results-count"></div>
+  <section id="games-container" class="view-list"></section>
+
+  <footer>⚔ La Taverne des Aventuriers ⚔</footer>
 </div>
 
 <script>
+/* ─── DATA ─────────────────────────────────────────── */
 const games = [
-  {"title":"Voidtrain","status":"disponible","copies":1,"desc":"Survie à bord d’un train interdimensionnel.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/1159690/header.jpg"},
-  {"title":"Sons of the Forest","status":"disponible","copies":1,"desc":"Survival horror coopératif.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/1326470/header.jpg"},
-  {"title":"Icarus","status":"disponible","copies":1,"desc":"Survival et missions en monde persistant.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/1149460/header.jpg"},
-  {"title":"Abiotic Factor","status":"disponible","copies":1,"desc":"Survie et crafting souterrain.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/427410/header.jpg"},
-  {"title":"Gray Zone Warfare","status":"disponible","copies":1,"desc":"FPS tactique hardcore.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/2479810/header.jpg"},
-  {"title":"Remnant 2","status":"disponible","copies":1,"desc":"Affrontez créatures et boss divins.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/1282100/header.jpg"},
-  {"title":"Ready or Not","status":"disponible","copies":1,"desc":"FPS tactique intense.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/1144200/header.jpg"},
-  {"title":"Peak","status":"disponible","copies":1,"desc":"Survival extrême en montagne.","image":"https://worldofgeek.fr/wp-content/uploads/2025/07/jeu-peak.png"},
-  {"title":"Green Hell","status":"disponible","copies":1,"desc":"Survival réaliste en Amazonie.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/815370/header.jpg"},
-  {"title":"Lens Island","status":"disponible","copies":2,"desc":"Explorez une île mystérieuse.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/1335830/header.jpg"},
-  {"title":"SnowRunner","status":"Réservé","copies":1,"desc":"Simulation tout-terrain.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/1465360/header.jpg"},
-  {"title":"Dying Light 2","status":"Réservé","copies":1,"desc":"Monde ouvert et choix impactants.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/534380/header.jpg"},
-  {"title":"Enshrouded","status":"disponible","copies":1,"desc":"Survival coopératif dans un monde brumeux.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/1203620/header.jpg"},
-  {"title":"No Man's Sky","status":"Réservé","copies":1,"desc":"Exploration spatiale infinie.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/275850/header.jpg"},
-  {"title":"Baldur's Gate 3","status":"disponible","copies":1,"desc":"Retour aux Royaumes Oubliés.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/header.jpg"},
-  {"title":"RV There Yet","status":"disponible","copies":2,"desc":"Aventure coopérative en van.","image":"https://gaming-cdn.com/images/products/20702/orig/rv-there-yet-pc-steam-cover.jpg?v=1761118646"},
-  {"title":"Tom Clancy's Ghost Recon Breakpoint","status":"Réservé","copies":2,"desc":"Devenez un Ghost face aux Wolves.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/2231380/header.jpg"},
-  {"title":"Arma Reforger","status":"disponible","copies":1,"desc":"Sandbox militaire immersif.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/1874880/header.jpg"},
-  {"title":"Ark Survival Ascended","status":"disponible","copies":1,"desc":"Formez une tribu et survivez.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/2399830/header.jpg"},
-  {"title":"Dinkum","status":"disponible","copies":1,"desc":"Collecte et développement de ville.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/1062520/header.jpg"},
-  {"title":"Spyro Reignited Trilogy","status":"disponible","copies":1,"desc":"Spyro revient en HD.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/996580/header.jpg"},
-  {"title":"Megabonk","status":"Réservé","copies":1,"desc":"Repoussez des hordes infinies.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/3405340/header.jpg"},
-  {"title":"Monster Hunter Rise","status":"disponible","copies":1,"desc":"Chasse aux monstres.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/1446780/header.jpg"},
-  {"title":"Phasmophobia","status":"disponible","copies":1,"desc":"Horreur coopérative en ligne.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/739630/header.jpg"},
-  {"title":"Jagged Alliance 3","status":"disponible","copies":1,"desc":"Tactique au tour par tour.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/1084160/header.jpg"},
-  {"title":"Mortal Kombat 11","status":"disponible","copies":1,"desc":"Combat brutal.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/976310/header.jpg"},
-  {"title":"PowerWash Simulator 2","status":"disponible","copies":2,"desc":"Nettoyage relaxant.","image":"https://www.nintendo.com/eu/media/images/assets/nintendo_switch_2_games/powerwashsimulator2/16x9_PowerWashSimulator2_image1600w.jpg"},
-  {"title":"Subnautica","status":"disponible","copies":1,"desc":"Survie sous-marine.","image":"https://cdn.cloudflare.steamstatic.com/steam/apps/264710/header.jpg"},
-  {"title":"Bellwright","status":"Réservé","copies":1,"desc":"Jeu narratif immersif.","image":"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1812450/9edcb48a97b6073fc7e74dbec5d2fbb77ec6f566/capsule_616x353.jpg?t=1766079675"},
-  {"title":"Car Dealership Simulator 2","status":"disponible","copies":1,"desc":"Gérez une concession.","image":"https://cdn.dlcompare.com/game_tetiere/upload/gameimage/file/car-dealership-simulator-2-file-21812926c5.png.webp"},
-  {"title":"Blue Prince","status":"disponible","copies":1,"desc":"Manoir vivant et énigmes.","image":"https://www.dexerto.fr/cdn-image/wp-content/uploads/sites/2/2025/04/10/blue-prince-jeu.jpg"},
-  {"title":"Transport Fever 2","status":"disponible","copies":1,"desc":"Gestion de transports.","image":"https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1066780/capsule_616x353.jpg?t=1727104059"},
-  {"title":"Scarlet Nexus","status":"Réservé","copies":1,"desc":"Action RPG futuriste.","image":"https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/775500/header.jpg?t=1703662938"},
-  {"title":"V Rising","status":"disponible","copies":1,"desc":"Survivez en vampire.","image":"https://sm.ign.com/ign_fr/cover/v/v-rising/v-rising_ra9r.jpg"}
+  {title:"Voidtrain",            status:"disponible", copies:1, steam_id:1159690,  genres:["Survival","Coopératif","Sci-Fi"],           desc:"Survie à bord d'un train interdimensionnel.",        image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1159690/header.jpg"},
+  {title:"Sons of the Forest",   status:"disponible", copies:1, steam_id:1326470,  genres:["Survival","Horreur","Coopératif"],           desc:"Survival horror coopératif en forêt dense.",         image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1326470/header.jpg"},
+  {title:"Icarus",               status:"disponible", copies:1, steam_id:1149460,  genres:["Survival","Exploration","Coopératif"],       desc:"Survival et missions en monde persistant.",           image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1149460/header.jpg"},
+  {title:"Abiotic Factor",       status:"disponible", copies:1, steam_id:427410,   genres:["Survival","Crafting","Coopératif"],          desc:"Survie et crafting souterrain.",                     image:"https://cdn.cloudflare.steamstatic.com/steam/apps/427410/header.jpg"},
+  {title:"Gray Zone Warfare",    status:"disponible", copies:1, steam_id:2479810,  genres:["FPS","Tactique","Extraction"],               desc:"FPS tactique hardcore en zone de conflit.",           image:"https://cdn.cloudflare.steamstatic.com/steam/apps/2479810/header.jpg"},
+  {title:"Remnant 2",            status:"disponible", copies:1, steam_id:1282100,  genres:["Action-RPG","Coopératif","Souls-like"],      desc:"Affrontez créatures et boss divins.",                image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1282100/header.jpg"},
+  {title:"Ready or Not",         status:"disponible", copies:1, steam_id:1144200,  genres:["FPS","Tactique","Coopératif"],               desc:"FPS tactique intense, forces spéciales.",            image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1144200/header.jpg"},
+  {title:"Peak",                 status:"disponible", copies:1, steam_id:null,     genres:["Survival","Coopératif"],                     desc:"Survival extrême en montagne.",                      image:"https://worldofgeek.fr/wp-content/uploads/2025/07/jeu-peak.png"},
+  {title:"Green Hell",           status:"disponible", copies:1, steam_id:815370,   genres:["Survival","Simulation","Coopératif"],        desc:"Survival réaliste en Amazonie.",                     image:"https://cdn.cloudflare.steamstatic.com/steam/apps/815370/header.jpg"},
+  {title:"Lens Island",          status:"disponible", copies:2, steam_id:1335830,  genres:["Exploration","Aventure","RPG"],              desc:"Explorez une île mystérieuse.",                      image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1335830/header.jpg"},
+  {title:"SnowRunner",           status:"Réservé",    copies:1, steam_id:1465360,  genres:["Simulation","Off-road","Coopératif"],        desc:"Simulation tout-terrain extrême.",                   image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1465360/header.jpg"},
+  {title:"Dying Light 2",        status:"Réservé",    copies:1, steam_id:534380,   genres:["Monde ouvert","Horreur","Action"],           desc:"Monde ouvert post-apo et choix impactants.",         image:"https://cdn.cloudflare.steamstatic.com/steam/apps/534380/header.jpg"},
+  {title:"Enshrouded",           status:"disponible", copies:1, steam_id:1203620,  genres:["Survival","Crafting","Coopératif"],          desc:"Survival coopératif dans un monde brumeux.",         image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1203620/header.jpg"},
+  {title:"No Man's Sky",         status:"Réservé",    copies:1, steam_id:275850,   genres:["Exploration","Survival","Sci-Fi"],           desc:"Exploration spatiale infinie.",                      image:"https://cdn.cloudflare.steamstatic.com/steam/apps/275850/header.jpg"},
+  {title:"Baldur's Gate 3",      status:"disponible", copies:1, steam_id:1086940,  genres:["RPG","Tour par tour","Coopératif"],          desc:"Retour aux Royaumes Oubliés.",                       image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/header.jpg"},
+  {title:"RV There Yet",         status:"disponible", copies:2, steam_id:null,     genres:["Simulation","Coopératif","Aventure"],        desc:"Aventure coopérative en camping-car.",               image:"https://gaming-cdn.com/images/products/20702/orig/rv-there-yet-pc-steam-cover.jpg?v=1761118646"},
+  {title:"Ghost Recon Breakpoint",status:"Réservé",   copies:2, steam_id:1043690,  genres:["FPS","Tactique","Monde ouvert"],             desc:"Devenez un Ghost face aux Wolves.",                  image:"https://cdn.cloudflare.steamstatic.com/steam/apps/2231380/header.jpg"},
+  {title:"Arma Reforger",        status:"disponible", copies:1, steam_id:1874880,  genres:["FPS","Simulation","Tactique"],               desc:"Sandbox militaire immersif.",                        image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1874880/header.jpg"},
+  {title:"Ark Survival Ascended",status:"disponible", copies:1, steam_id:2399830,  genres:["Survival","Crafting","Coopératif"],          desc:"Formez une tribu et survivez aux dinosaures.",       image:"https://cdn.cloudflare.steamstatic.com/steam/apps/2399830/header.jpg"},
+  {title:"Dinkum",               status:"disponible", copies:1, steam_id:1062520,  genres:["Simulation","Construction","Coopératif"],    desc:"Collecte et développement d'une ville.",             image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1062520/header.jpg"},
+  {title:"Spyro Reignited",      status:"disponible", copies:1, steam_id:996580,   genres:["Plateforme","Aventure","Classique"],         desc:"Spyro le dragon revient en HD.",                     image:"https://cdn.cloudflare.steamstatic.com/steam/apps/996580/header.jpg"},
+  {title:"Megabonk",             status:"Réservé",    copies:1, steam_id:3405340,  genres:["Action","Horde","Coopératif"],               desc:"Repoussez des hordes infinies d'ennemis.",           image:"https://cdn.cloudflare.steamstatic.com/steam/apps/3405340/header.jpg"},
+  {title:"Monster Hunter Rise",  status:"disponible", copies:1, steam_id:1446780,  genres:["Action","Coopératif","RPG"],                 desc:"Chasse aux monstres colossaux.",                     image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1446780/header.jpg"},
+  {title:"Phasmophobia",         status:"disponible", copies:1, steam_id:739630,   genres:["Horreur","Coopératif"],                      desc:"Chasse aux fantômes en coopératif.",                 image:"https://cdn.cloudflare.steamstatic.com/steam/apps/739630/header.jpg"},
+  {title:"Jagged Alliance 3",    status:"disponible", copies:1, steam_id:1084160,  genres:["Tactique","Tour par tour","RPG"],             desc:"Tactique au tour par tour.",                         image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1084160/header.jpg"},
+  {title:"Mortal Kombat 11",     status:"disponible", copies:1, steam_id:976310,   genres:["Combat","Action"],                           desc:"Combat brutal et ultime.",                           image:"https://cdn.cloudflare.steamstatic.com/steam/apps/976310/header.jpg"},
+  {title:"PowerWash Simulator 2",status:"disponible", copies:2, steam_id:null,     genres:["Simulation","Relaxant","Coopératif"],        desc:"Nettoyage relaxant et coopératif.",                  image:"https://www.nintendo.com/eu/media/images/assets/nintendo_switch_2_games/powerwashsimulator2/16x9_PowerWashSimulator2_image1600w.jpg"},
+  {title:"Subnautica",           status:"disponible", copies:1, steam_id:264710,   genres:["Survival","Exploration","Sci-Fi"],           desc:"Survie et exploration sous-marine.",                 image:"https://cdn.cloudflare.steamstatic.com/steam/apps/264710/header.jpg"},
+  {title:"Bellwright",           status:"Réservé",    copies:1, steam_id:1812450,  genres:["Stratégie","RPG","Construction"],            desc:"Construisez un mouvement de résistance.",            image:"https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1812450/9edcb48a97b6073fc7e74dbec5d2fbb77ec6f566/capsule_616x353.jpg?t=1766079675"},
+  {title:"Car Dealership Sim 2", status:"disponible", copies:1, steam_id:null,     genres:["Simulation","Gestion"],                      desc:"Gérez une concession automobile.",                   image:"https://cdn.dlcompare.com/game_tetiere/upload/gameimage/file/car-dealership-simulator-2-file-21812926c5.png.webp"},
+  {title:"Blue Prince",          status:"disponible", copies:1, steam_id:null,     genres:["Puzzle","Aventure","Roguelike"],             desc:"Manoir vivant et énigmes architecturales.",          image:"https://www.dexerto.fr/cdn-image/wp-content/uploads/sites/2/2025/04/10/blue-prince-jeu.jpg"},
+  {title:"Transport Fever 2",    status:"disponible", copies:1, steam_id:1066780,  genres:["Simulation","Gestion","Construction"],       desc:"Gestion de réseaux de transport.",                   image:"https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1066780/capsule_616x353.jpg?t=1727104059"},
+  {title:"Scarlet Nexus",        status:"Réservé",    copies:1, steam_id:775500,   genres:["Action-RPG","Hack & Slash","Sci-Fi"],        desc:"Action-RPG futuriste et pouvoirs psychiques.",       image:"https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/775500/header.jpg?t=1703662938"},
+  {title:"V Rising",             status:"disponible", copies:1, steam_id:1604030,  genres:["Survival","Action-RPG","Crafting"],          desc:"Survivez et régnez en tant que vampire.",            image:"https://sm.ign.com/ign_fr/cover/v/v-rising/v-rising_ra9r.jpg"}
 ];
 
-const container = document.getElementById("games-container");
-games.forEach(g=>{
-  const card=document.createElement("article");
-  card.className="card";
-  const img=document.createElement("img");
-  img.className="jaquette";
-  img.src=g.image;
-  const body=document.createElement("div");
-  body.innerHTML=`<h3 class="text-xl font-semibold">${g.title}</h3>
-    <span class="${g.status==="Réservé"?"badge-reserved":"badge-available"}">${g.status}</span>
-    <p class="text-sm mt-2">${g.desc}</p>
-    <p class="italic text-sm mt-1">🎮 Exemplaires : ${g.copies}</p>`;
-  card.append(img,body);
-  container.appendChild(card);
+/* ─── CONSTANTS ─────────────────────────────────────── */
+const STEAM_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.003.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.711L.436 13.168C1.862 19.35 7.279 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.606 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.455 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.252 0-2.265-1.014-2.265-2.265z"/></svg>`;
+const STEAM_ICON_LG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.003.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.711L.436 13.168C1.862 19.35 7.279 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.606 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.455 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.252 0-2.265-1.014-2.265-2.265z"/></svg>`;
+
+/* ─── STATE ─────────────────────────────────────────── */
+let activeStatus = 'all';
+let activeGenre  = null;
+let currentView  = 'list';
+
+/* ─── STATS ─────────────────────────────────────────── */
+const norm = s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+const isRes = g => norm(g.status).startsWith('r');
+document.getElementById('stat-total').textContent     = games.length;
+document.getElementById('stat-available').textContent = games.filter(g => !isRes(g)).length;
+document.getElementById('stat-reserved').textContent  = games.filter(g =>  isRes(g)).length;
+
+/* ─── GENRE FILTER BUILD ────────────────────────────── */
+const allGenres = [...new Set(games.flatMap(g => g.genres))].sort((a,b)=>a.localeCompare(b,'fr'));
+const genreRow  = document.getElementById('genre-row');
+
+function buildGenreRow() {
+  // remove old buttons (keep label)
+  [...genreRow.querySelectorAll('.filter-btn')].forEach(b=>b.remove());
+  const allBtn = document.createElement('button');
+  allBtn.className = 'filter-btn' + (activeGenre === null ? ' active' : '');
+  allBtn.dataset.genre = '__all__';
+  allBtn.textContent = 'Tous';
+  genreRow.appendChild(allBtn);
+  allGenres.forEach(g => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (activeGenre === g ? ' active' : '');
+    btn.dataset.genre = g;
+    btn.textContent = g;
+    genreRow.appendChild(btn);
+  });
+}
+buildGenreRow();
+
+genreRow.addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  activeGenre = btn.dataset.genre === '__all__' ? null : btn.dataset.genre;
+  buildGenreRow();
+  renderGames();
 });
+
+/* ─── STATUS FILTERS ────────────────────────────────── */
+document.querySelectorAll('[data-status]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-status]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeStatus = btn.dataset.status;
+    renderGames();
+  });
+});
+
+/* ─── VIEW TOGGLE ───────────────────────────────────── */
+document.getElementById('btn-list').addEventListener('click', () => {
+  currentView = 'list';
+  document.getElementById('btn-list').classList.add('active');
+  document.getElementById('btn-grid').classList.remove('active');
+  renderGames();
+});
+document.getElementById('btn-grid').addEventListener('click', () => {
+  currentView = 'grid';
+  document.getElementById('btn-grid').classList.add('active');
+  document.getElementById('btn-list').classList.remove('active');
+  renderGames();
+});
+
+/* ─── HTML BUILDERS ─────────────────────────────────── */
+function steamOverlayHTML(id, small=false) {
+  if (!id) return '';
+  const icon = small
+    ? `<div class="steam-icon-circle" style="width:32px;height:32px;">${STEAM_ICON}</div>`
+    : `<div class="steam-icon-circle">${STEAM_ICON_LG}</div>`;
+  return `<a href="https://store.steampowered.com/app/${id}/" target="_blank" rel="noopener" onclick="event.stopPropagation()">${icon}<span>Voir sur Steam</span></a>`;
+}
+
+function steamBtnHTML(id) {
+  if (!id) return '';
+  return `<a class="steam-link-btn" href="https://store.steampowered.com/app/${id}/" target="_blank" rel="noopener" onclick="event.stopPropagation()">${STEAM_ICON} Steam</a>`;
+}
+
+function tagsHTML(genres, cssClass='genre-tag') {
+  return genres.map(g =>
+    `<span class="${cssClass}${activeGenre===g?' hl':''}" data-g="${g}">${g}</span>`
+  ).join('');
+}
+
+/* ─── RENDER ────────────────────────────────────────── */
+function renderGames() {
+  const q = norm(document.getElementById('search-input').value);
+  const sortVal = document.getElementById('sort-select').value;
+
+  let filtered = games.filter(g => {
+    const ms = !q || norm(g.title).includes(q) || norm(g.desc).includes(q) || g.genres.some(ge=>norm(ge).includes(q));
+    const mst = activeStatus==='all' || (activeStatus==='disponible'&&!isRes(g)) || (activeStatus==='reserve'&&isRes(g));
+    const mg  = !activeGenre || g.genres.includes(activeGenre);
+    return ms && mst && mg;
+  });
+
+  if (sortVal==='alpha')     filtered.sort((a,b)=>a.title.localeCompare(b.title,'fr'));
+  if (sortVal==='available') filtered.sort((a,b)=>(isRes(a)?1:0)-(isRes(b)?1:0));
+  if (sortVal==='reserved')  filtered.sort((a,b)=>(isRes(b)?1:0)-(isRes(a)?1:0));
+
+  const container = document.getElementById('games-container');
+  container.className = currentView==='grid' ? 'view-grid' : 'view-list';
+  container.innerHTML = '';
+
+  document.getElementById('results-count').textContent =
+    filtered.length ? `${filtered.length} titre${filtered.length>1?'s':''} affiché${filtered.length>1?'s':''}` : '';
+
+  if (!filtered.length) {
+    container.innerHTML = `<div class="empty-state">
+      <svg xmlns="http://www.w3.org/2000/svg" width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="color:rgba(200,147,42,.33);margin:0 auto;display:block"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <p>Aucune aventure trouvée…</p></div>`;
+    return;
+  }
+
+  filtered.forEach((g, i) => {
+    const res = isRes(g);
+    const el  = document.createElement('article');
+    el.style.animationDelay = `${i*42}ms`;
+
+    if (currentView === 'list') {
+      el.className = 'card-list';
+      el.innerHTML = `
+        <div class="jaquette-wrap">
+          <img class="jaquette" src="${g.image}" alt="${g.title}" loading="lazy">
+          <div class="steam-overlay">${steamOverlayHTML(g.steam_id)}</div>
+        </div>
+        <div class="card-body-inner">
+          <div class="card-title">${g.title}</div>
+          <div class="card-desc">${g.desc}</div>
+          <div class="genre-tags">${tagsHTML(g.genres)}</div>
+          <div class="card-footer-row">
+            <span class="badge ${res?'badge-reserved':'badge-available'}"><span class="badge-dot"></span>${res?'Réservé':'Disponible'}</span>
+            <span class="copies-pill">🎮 ×${g.copies}</span>
+            ${steamBtnHTML(g.steam_id)}
+          </div>
+        </div>`;
+    } else {
+      el.className = 'card-grid';
+      el.innerHTML = `
+        <div class="img-top">
+          <img src="${g.image}" alt="${g.title}" loading="lazy">
+          <span class="status-ribbon ${res?'res':'avail'}">${res?'Réservé':'Dispo'}</span>
+          <div class="grid-steam-overlay">${steamOverlayHTML(g.steam_id, true)}</div>
+        </div>
+        <div class="card-body-inner">
+          <div class="card-title">${g.title}</div>
+          <div class="card-desc">${g.desc}</div>
+          <div class="genre-tags">${tagsHTML(g.genres)}</div>
+          <div class="card-footer-row">
+            <span class="copies-pill">🎮 ×${g.copies}</span>
+            ${steamBtnHTML(g.steam_id)}
+          </div>
+        </div>`;
+    }
+
+    // genre tag click → filter
+    el.querySelectorAll('.genre-tag').forEach(tag => {
+      tag.addEventListener('click', e => {
+        e.stopPropagation();
+        activeGenre = (activeGenre === tag.dataset.g) ? null : tag.dataset.g;
+        buildGenreRow();
+        renderGames();
+      });
+    });
+
+    container.appendChild(el);
+  });
+}
+
+document.getElementById('search-input').addEventListener('input', renderGames);
+document.getElementById('sort-select').addEventListener('change', renderGames);
+
+renderGames();
 </script>
 </body>
 </html>
-
-
-
