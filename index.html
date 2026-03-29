@@ -188,6 +188,95 @@ h1 span{display:block;font-size:clamp(1.1rem,2.8vw,2.4rem);color:rgba(232,184,75
 .twitch-url:hover{color:rgba(196,160,255,.9);}
 
 /* ═══════════════════════════════════════
+   HOW IT WORKS
+═══════════════════════════════════════ */
+.howto{
+  margin:1.8rem 0;
+  border-radius:20px;
+  border:1.5px solid rgba(200,147,42,.28);
+  background:linear-gradient(135deg,rgba(35,15,2,.88),rgba(20,8,1,.93));
+  backdrop-filter:blur(10px);
+  box-shadow:0 8px 40px rgba(0,0,0,.45),inset 0 1px 0 rgba(200,147,42,.15);
+  padding:2rem 2.5rem;
+}
+.howto-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.6rem;}
+.howto-header-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(200,147,42,.35),transparent);}
+.howto-title{
+  font-family:'Cinzel Decorative',serif;font-size:clamp(.95rem,1.8vw,1.3rem);
+  color:var(--gold-light);letter-spacing:.06em;white-space:nowrap;
+  text-shadow:0 0 20px rgba(200,140,30,.35);
+}
+.howto-steps{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:1rem;
+}
+.howto-step{
+  display:flex;flex-direction:column;align-items:center;gap:.7rem;
+  padding:1.2rem 1rem;
+  background:rgba(200,147,42,.06);
+  border:1px solid rgba(200,147,42,.18);
+  border-radius:14px;
+  text-align:center;
+  transition:border-color .2s,background .2s;
+  position:relative;
+}
+.howto-step:hover{background:rgba(200,147,42,.11);border-color:rgba(200,147,42,.38);}
+/* connector arrow between steps */
+.howto-steps .howto-step:not(:last-child)::after{
+  content:'›';
+  position:absolute;right:-1.1rem;top:50%;transform:translateY(-50%);
+  font-size:1.4rem;color:rgba(200,147,42,.35);
+  display:none; /* shown via media query on wide screens */
+}
+@media(min-width:800px){
+  .howto-steps{grid-template-columns:repeat(4,1fr);}
+  .howto-steps .howto-step:not(:last-child)::after{display:block;}
+}
+.step-icon{
+  width:52px;height:52px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;
+  background:rgba(200,147,42,.12);
+  border:1.5px solid rgba(200,147,42,.3);
+  box-shadow:0 0 20px rgba(200,147,42,.12);
+  flex-shrink:0;
+}
+.step-num{
+  font-family:'Cinzel',serif;font-size:.62rem;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(200,147,42,.55);
+}
+.step-title{
+  font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;
+  color:var(--parchment);line-height:1.3;
+}
+.step-desc{
+  font-size:.76rem;color:rgba(245,233,204,.58);
+  font-style:italic;line-height:1.5;
+}
+.step-highlight{
+  display:inline-block;
+  padding:.22rem .7rem;border-radius:999px;
+  background:rgba(145,70,255,.15);border:1px solid rgba(145,70,255,.35);
+  color:#c4a0ff;font-family:'Cinzel',serif;font-size:.68rem;
+  letter-spacing:.08em;margin-top:.2rem;
+}
+.step-highlight.gold{
+  background:rgba(200,147,42,.15);border-color:rgba(200,147,42,.4);
+  color:var(--gold-light);
+}
+.howto-footer{
+  margin-top:1.4rem;padding-top:1.2rem;
+  border-top:1px solid rgba(200,147,42,.15);
+  display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;justify-content:center;
+}
+.howto-footer-text{
+  font-family:'Lora',serif;font-size:.8rem;font-style:italic;
+  color:rgba(245,233,204,.52);text-align:center;line-height:1.6;
+}
+.howto-footer-text strong{color:rgba(232,184,75,.8);font-style:normal;}
+
+/* ═══════════════════════════════════════
    CONTROLS
 ═══════════════════════════════════════ */
 .controls{display:flex;gap:.9rem;flex-wrap:wrap;margin:0 0 .9rem;align-items:center;}
@@ -419,6 +508,57 @@ footer{text-align:center;padding:2.5rem 1rem;display:flex;flex-direction:column;
         Rejoindre le live
       </a>
       <a class="twitch-url" href="https://twitch.tv/latavernedesvieux" target="_blank" rel="noopener">twitch.tv/latavernedesvieux</a>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="howto">
+    <div class="howto-header">
+      <div class="howto-title">⚔ Comment emprunter un jeu ?</div>
+      <div class="howto-header-line"></div>
+    </div>
+    <div class="howto-steps">
+
+      <div class="howto-step">
+        <div class="step-icon">📺</div>
+        <div class="step-num">Étape 1</div>
+        <div class="step-title">Regarder le live</div>
+        <div class="step-desc">Rejoins la chaîne chaque soir et regarde le stream.</div>
+        <span class="step-highlight">
+          <svg style="vertical-align:middle;margin-right:.3rem" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M2.149 0l-1.612 4.119v16.836h5.731v3.045h3.224l3.045-3.045h4.657l6.269-6.269v-14.686h-21.314zm19.164 13.612l-3.582 3.582h-5.731l-3.045 3.045v-3.045h-4.836v-15.045h17.194v11.463zm-3.582-7.343v6.262h-2.149v-6.262h2.149zm-5.731 0v6.262h-2.149v-6.262h2.149z"/></svg>
+          21h – 23h tous les soirs
+        </span>
+      </div>
+
+      <div class="howto-step">
+        <div class="step-icon">🪙</div>
+        <div class="step-num">Étape 2</div>
+        <div class="step-title">Accumuler des points</div>
+        <div class="step-desc">Twitch te donne des points de chaîne automatiquement en regardant. Aucun achat requis, c'est 100% gratuit.</div>
+        <span class="step-highlight gold">10 000 points nécessaires</span>
+      </div>
+
+      <div class="howto-step">
+        <div class="step-icon">🎮</div>
+        <div class="step-num">Étape 3</div>
+        <div class="step-title">Choisir un jeu</div>
+        <div class="step-desc">Parcours la bibliothèque ci-dessous et repère un jeu <strong style="color:var(--available-col);font-style:normal;">disponible</strong> qui te fait envie.</div>
+      </div>
+
+      <div class="howto-step">
+        <div class="step-icon">🤝</div>
+        <div class="step-num">Étape 4</div>
+        <div class="step-title">Dépenser les points</div>
+        <div class="step-desc">Utilise tes 10 000 points sur le chat Twitch pour déclencher l'emprunt. Le jeu est à toi !</div>
+        <span class="step-highlight">Via le chat Twitch</span>
+      </div>
+
+    </div>
+    <div class="howto-footer">
+      <div class="howto-footer-text">
+        💡 <strong>Le saviez-vous ?</strong> En regardant 2h de live par soir, tu accumules environ 10 000 points en moins d'une semaine — sans rien dépenser.
+        Les points Twitch se gagnent aussi en participant au chat, en suivant la chaîne et lors des bonus spéciaux en direct.
+      </div>
     </div>
   </div>
 
