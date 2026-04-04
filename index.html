@@ -138,7 +138,6 @@ h1 span{display:block;font-size:clamp(1.1rem,2.8vw,2.4rem);color:rgba(232,184,75
   padding:2rem 2.5rem;
   display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;
 }
-/* animated purple glow blob */
 .twitch-banner::before{
   content:'';position:absolute;width:400px;height:400px;border-radius:50%;
   background:radial-gradient(circle,rgba(145,70,255,.18) 0%,transparent 70%);
@@ -221,12 +220,11 @@ h1 span{display:block;font-size:clamp(1.1rem,2.8vw,2.4rem);color:rgba(232,184,75
   position:relative;
 }
 .howto-step:hover{background:rgba(200,147,42,.11);border-color:rgba(200,147,42,.38);}
-/* connector arrow between steps */
 .howto-steps .howto-step:not(:last-child)::after{
   content:'›';
   position:absolute;right:-1.1rem;top:50%;transform:translateY(-50%);
   font-size:1.4rem;color:rgba(200,147,42,.35);
-  display:none; /* shown via media query on wide screens */
+  display:none;
 }
 @media(min-width:800px){
   .howto-steps{grid-template-columns:repeat(4,1fr);}
@@ -400,7 +398,6 @@ input[type="search"]::-webkit-search-cancel-button{display:none;}
   font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;
   color:rgba(145,70,255,.6);text-align:right;padding-right:.2rem;
 }
-/* pulse ring */
 .twitch-float-btn::before{
   content:'';position:absolute;inset:-4px;border-radius:16px;
   border:2px solid rgba(145,70,255,.4);
@@ -642,7 +639,6 @@ footer{text-align:center;padding:2.5rem 1rem;display:flex;flex-direction:column;
       this.speedX = rand(-.35, .35);
       this.life   = rand(.4, 1);
       this.decay  = rand(.002, .006);
-      // warm ember colour
       const h = rand(15,40), s=rand(80,100), l=rand(50,75);
       this.color = `hsla(${h},${s}%,${l}%,`;
     }
@@ -657,7 +653,6 @@ footer{text-align:center;padding:2.5rem 1rem;display:flex;flex-direction:column;
       ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
       ctx.fillStyle = this.color + this.life + ')';
       ctx.fill();
-      // glow
       ctx.shadowBlur  = 8;
       ctx.shadowColor = this.color + '.7)';
       ctx.fill();
@@ -684,7 +679,6 @@ footer{text-align:center;padding:2.5rem 1rem;display:flex;flex-direction:column;
 
   document.getElementById('intro-enter').addEventListener('click', closeIntro);
   document.getElementById('intro-skip').addEventListener('click', closeIntro);
-  // also close on Escape
   document.addEventListener('keydown', e => { if(e.key==='Escape') closeIntro(); });
 })();
 
@@ -705,15 +699,15 @@ const games = [
   {title:"SnowRunner",           status:"Réservé",    copies:1, steam_id:1465360,  genres:["Simulation","Off-road","Coopératif"],        desc:"Simulation tout-terrain extrême.",                   image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1465360/header.jpg"},
   {title:"Dying Light 2",        status:"Réservé",    copies:1, steam_id:534380,   genres:["Monde ouvert","Horreur","Action"],           desc:"Monde ouvert post-apo et choix impactants.",         image:"https://cdn.cloudflare.steamstatic.com/steam/apps/534380/header.jpg"},
   {title:"Enshrouded",           status:"disponible", copies:1, steam_id:1203620,  genres:["Survival","Crafting","Coopératif"],          desc:"Survival coopératif dans un monde brumeux.",         image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1203620/header.jpg"},
-  {title:"No Man's Sky",         status:"disponible",    copies:1, steam_id:275850,   genres:["Exploration","Survival","Sci-Fi"],           desc:"Exploration spatiale infinie.",                      image:"https://cdn.cloudflare.steamstatic.com/steam/apps/275850/header.jpg"},
+  {title:"No Man's Sky",         status:"disponible", copies:1, steam_id:275850,   genres:["Exploration","Survival","Sci-Fi"],           desc:"Exploration spatiale infinie.",                      image:"https://cdn.cloudflare.steamstatic.com/steam/apps/275850/header.jpg"},
   {title:"Baldur's Gate 3",      status:"disponible", copies:1, steam_id:1086940,  genres:["RPG","Tour par tour","Coopératif"],          desc:"Retour aux Royaumes Oubliés.",                       image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/header.jpg"},
   {title:"RV There Yet",         status:"disponible", copies:2, steam_id:null,     genres:["Simulation","Coopératif","Aventure"],        desc:"Aventure coopérative en camping-car.",               image:"https://gaming-cdn.com/images/products/20702/orig/rv-there-yet-pc-steam-cover.jpg?v=1761118646"},
-  {title:"Ghost Recon Breakpoint",status:"disponible",   copies:2, steam_id:1043690,  genres:["FPS","Tactique","Monde ouvert"],             desc:"Devenez un Ghost face aux Wolves.",                  image:"https://cdn.cloudflare.steamstatic.com/steam/apps/2231380/header.jpg"},
+  {title:"Ghost Recon Breakpoint",status:"disponible",copies:2, steam_id:1043690,  genres:["FPS","Tactique","Monde ouvert"],             desc:"Devenez un Ghost face aux Wolves.",                  image:"https://cdn.cloudflare.steamstatic.com/steam/apps/2231380/header.jpg"},
   {title:"Arma Reforger",        status:"disponible", copies:1, steam_id:1874880,  genres:["FPS","Simulation","Tactique"],               desc:"Sandbox militaire immersif.",                        image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1874880/header.jpg"},
   {title:"Ark Survival Ascended",status:"disponible", copies:1, steam_id:2399830,  genres:["Survival","Crafting","Coopératif"],          desc:"Formez une tribu et survivez aux dinosaures.",       image:"https://cdn.cloudflare.steamstatic.com/steam/apps/2399830/header.jpg"},
   {title:"Dinkum",               status:"disponible", copies:1, steam_id:1062520,  genres:["Simulation","Construction","Coopératif"],    desc:"Collecte et développement d'une ville.",             image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1062520/header.jpg"},
   {title:"Spyro Reignited",      status:"disponible", copies:1, steam_id:996580,   genres:["Plateforme","Aventure","Classique"],         desc:"Spyro le dragon revient en HD.",                     image:"https://cdn.cloudflare.steamstatic.com/steam/apps/996580/header.jpg"},
-  {title:"Megabonk",             status:"disponible",    copies:1, steam_id:3405340,  genres:["Action","Horde","Coopératif"],               desc:"Repoussez des hordes infinies d'ennemis.",           image:"https://cdn.cloudflare.steamstatic.com/steam/apps/3405340/header.jpg"},
+  {title:"Megabonk",             status:"disponible", copies:1, steam_id:3405340,  genres:["Action","Horde","Coopératif"],               desc:"Repoussez des hordes infinies d'ennemis.",           image:"https://cdn.cloudflare.steamstatic.com/steam/apps/3405340/header.jpg"},
   {title:"Monster Hunter Rise",  status:"disponible", copies:1, steam_id:1446780,  genres:["Action","Coopératif","RPG"],                 desc:"Chasse aux monstres colossaux.",                     image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1446780/header.jpg"},
   {title:"Phasmophobia",         status:"disponible", copies:1, steam_id:739630,   genres:["Horreur","Coopératif"],                      desc:"Chasse aux fantômes en coopératif.",                 image:"https://cdn.cloudflare.steamstatic.com/steam/apps/739630/header.jpg"},
   {title:"Jagged Alliance 3",    status:"disponible", copies:1, steam_id:1084160,  genres:["Tactique","Tour par tour","RPG"],             desc:"Tactique au tour par tour.",                         image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1084160/header.jpg"},
@@ -724,8 +718,9 @@ const games = [
   {title:"Car Dealership Sim 2", status:"disponible", copies:1, steam_id:null,     genres:["Simulation","Gestion"],                      desc:"Gérez une concession automobile.",                   image:"https://cdn.dlcompare.com/game_tetiere/upload/gameimage/file/car-dealership-simulator-2-file-21812926c5.png.webp"},
   {title:"Blue Prince",          status:"disponible", copies:1, steam_id:null,     genres:["Puzzle","Aventure","Roguelike"],             desc:"Manoir vivant et énigmes architecturales.",          image:"https://www.dexerto.fr/cdn-image/wp-content/uploads/sites/2/2025/04/10/blue-prince-jeu.jpg"},
   {title:"Transport Fever 2",    status:"disponible", copies:1, steam_id:1066780,  genres:["Simulation","Gestion","Construction"],       desc:"Gestion de réseaux de transport.",                   image:"https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1066780/capsule_616x353.jpg?t=1727104059"},
-  {title:"Scarlet Nexus",        status:"disponible",    copies:1, steam_id:775500,   genres:["Action-RPG","Hack & Slash","Sci-Fi"],        desc:"Action-RPG futuriste et pouvoirs psychiques.",       image:"https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/775500/header.jpg?t=1703662938"},
-  {title:"V Rising",             status:"disponible", copies:1, steam_id:1604030,  genres:["Survival","Action-RPG","Crafting"],          desc:"Survivez et régnez en tant que vampire.",            image:"https://sm.ign.com/ign_fr/cover/v/v-rising/v-rising_ra9r.jpg"}
+  {title:"Scarlet Nexus",        status:"disponible", copies:1, steam_id:775500,   genres:["Action-RPG","Hack & Slash","Sci-Fi"],        desc:"Action-RPG futuriste et pouvoirs psychiques.",       image:"https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/775500/header.jpg?t=1703662938"},
+  {title:"V Rising",             status:"disponible", copies:1, steam_id:1604030,  genres:["Survival","Action-RPG","Crafting"],          desc:"Survivez et régnez en tant que vampire.",            image:"https://sm.ign.com/ign_fr/cover/v/v-rising/v-rising_ra9r.jpg"},
+  {title:"Escape the Backrooms", status:"disponible", copies:1, steam_id:1943950,  genres:["Horreur","Coopératif","Exploration"],        desc:"Explorez les niveaux infinis des Backrooms.",        image:"https://cdn.cloudflare.steamstatic.com/steam/apps/1943950/header.jpg"}
 ];
 
 /* ═══════════════════════════════
